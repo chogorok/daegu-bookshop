@@ -702,15 +702,39 @@ async function shareInsta(){
 
 async function downloadCard(){
   try{
-    const canvas=await html2canvas(document.getElementById('stampCard'),{backgroundColor:'#f8f5ec',scale:2});
-    const dataUrl=canvas.toDataURL('image/png');
-    const isIOS=/iPad|iPhone|iPod/.test(navigator.userAgent);
+    showToast('이미지를 준비 중이에요...');
+
+    // 모달 overflow 제거 → 전체 내용이 캡처되도록
+    const recordBox = document.querySelector('.record-box');
+    const prevMaxH = recordBox.style.maxHeight;
+    const prevOverflow = recordBox.style.overflowY;
+    recordBox.style.maxHeight = 'none';
+    recordBox.style.overflowY = 'visible';
+
+    // 잠깐 기다려서 레이아웃 재계산
+    await new Promise(r => setTimeout(r, 80));
+
+    const canvas = await html2canvas(document.getElementById('stampCard'), {
+      backgroundColor: '#f8f5ec',
+      scale: 2,
+      useCORS: true,
+      allowTaint: true,
+    });
+
+    // 복원
+    recordBox.style.maxHeight = prevMaxH;
+    recordBox.style.overflowY = prevOverflow;
+
+    const dataUrl = canvas.toDataURL('image/png');
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
     if(isIOS){
-      const win=window.open();
+      const win = window.open();
       win.document.write(`<img src="${dataUrl}" style="max-width:100%;display:block;margin:0 auto"><p style="font-family:sans-serif;color:#888;font-size:13px;text-align:center;padding:12px">이미지를 꾹 눌러 저장해주세요 📥</p>`);
     }else{
-      const a=document.createElement('a');
-      a.download='대구책방여행기록.png';a.href=dataUrl;a.click();
+      const a = document.createElement('a');
+      a.download = '대구책방여행기록.png';
+      a.href = dataUrl;
+      a.click();
     }
   }catch{showToast('이미지 저장에 실패했어요.');}
 }
