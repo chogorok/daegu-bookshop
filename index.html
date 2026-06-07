@@ -163,12 +163,10 @@ header p{font-size:13px;color:rgba(238,240,230,.65);letter-spacing:.04em;margin-
   .search-wrap{margin-bottom:14px;}
   .search-input{padding:10px 14px 10px 38px;font-size:13px;}
 
-  /* 가로형 카드 — 한 화면에 3개 */
+  /* 카드 목록 */
   .shop-grid{grid-template-columns:1fr;gap:9px;}
-  .shop-card{flex-direction:row;border-radius:10px;min-height:120px;}
-  .card-img-wrap{width:110px;height:120px;aspect-ratio:unset;flex-shrink:0;border-radius:0;}
-  .card-img-wrap img{width:100%;height:100%;object-fit:cover;}
-  .card-body{padding:10px 10px 10px 12px;}
+  .shop-card{border-radius:10px;}
+  .card-body{padding:12px 14px;}
   .shop-name{font-size:13px;padding-right:22px;margin-bottom:3px;}
   .shop-genre{font-size:10px;margin-bottom:4px;}
   .shop-desc{font-size:11px;-webkit-line-clamp:2;}
@@ -373,7 +371,6 @@ function renderShops(){
     card.onclick=()=>{ if(stamped)return; toggleSelect(shop.id); };
     card.innerHTML=`
       <div class="card-check">${stamped||sel?'✓':''}</div>
-      ${shop.signUrl?`<div class="card-img-wrap"><img src="${esc(shop.signUrl)}" loading="lazy" alt="${esc(shop.name)} 간판" onerror="this.parentElement.style.display='none'"></div>`:''}
       <div class="card-body">
         <div class="shop-name">${esc(shop.name)}</div>
         ${shop.genre?`<span class="shop-genre">${esc(shop.genre)}</span>`:''}
