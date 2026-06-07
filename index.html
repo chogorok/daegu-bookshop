@@ -235,9 +235,6 @@ header p{font-size:13px;color:rgba(238,240,230,.65);letter-spacing:.04em;margin-
       </div>
       <hr class="stamp-divider">
       <div class="stamp-grid" id="stampGrid"></div>
-      <hr class="stamp-divider">
-      <div class="visited-section-title">📋 다녀온 책방</div>
-      <div class="visited-list" id="visitedList"></div>
     </div>
     <div class="record-actions">
       <button class="btn-download" onclick="downloadCard()">⬇ 이미지 저장</button>
@@ -477,19 +474,6 @@ function renderStampCard(){
       }).join('')
     : `<div style="text-align:center;width:100%;padding:24px 0;color:#aaa;font-size:13px;">아직 방문한 책방이 없어요</div>`;
 
-  // 방문 리스트 (카운트 뱃지만 간소하게)
-  document.getElementById('visitedList').innerHTML=visited.length
-    ? visited.map((s,i)=>{
-        const st=stamps[s.id];
-        return`<div class="visited-item">
-          <div class="visited-num">${i+1}</div>
-          <div>
-            <div class="visited-name">${esc(s.name)}</div>
-            <div class="visited-meta">${st.date}</div>
-          </div>
-        </div>`;
-      }).join('')
-    : `<div class="empty-record"><span>🗺️</span>아직 방문한 책방이 없어요.<br>책방을 선택하고 사진을 등록해보세요!</div>`;
 }
 
 function resetStamps(){
