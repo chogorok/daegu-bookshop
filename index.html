@@ -242,6 +242,9 @@ header p{font-size:13px;color:rgba(250,246,239,.6);letter-spacing:.04em;margin-b
       <button class="btn-download" onclick="downloadCard()">⬇ 저장</button>
       <button class="btn-close-rec" onclick="closeRecord()">닫기</button>
     </div>
+    <div style="text-align:center;padding:0 20px 16px;">
+      <button onclick="resetStamps()" style="background:none;border:none;font-size:12px;color:#ccc;cursor:pointer;text-decoration:underline;">스탬프 전체 초기화</button>
+    </div>
   </div>
 </div>
 
@@ -530,6 +533,14 @@ function renderStampCard(){
       </div>`;
     }).join('')
     :`<div class="empty-record"><span>🗺️</span>아직 방문한 책방이 없어요.<br>책방을 선택하고 사진을 등록해보세요!</div>`;
+}
+
+function resetStamps(){
+  if(!confirm('스탬프를 전부 초기화할까요?'))return;
+  localStorage.removeItem('daegu_stamps');
+  closeRecord();
+  renderShops();
+  showToast('스탬프가 초기화됐어요');
 }
 
 function filterShops(q){
