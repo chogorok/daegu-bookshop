@@ -461,7 +461,10 @@ function renderStampCard(){
         const st=stamps[s.id];
         const imgSrc = s.signUrl || '';
         const imgHtml = imgSrc
-          ? `<img src="${esc(imgSrc)}" style="width:100%;aspect-ratio:1/1;object-fit:cover;display:block;border-radius:2px;">`
+          ? `<img src="${esc(imgSrc)}" crossorigin="anonymous"
+               onerror="this.style.display='none';this.nextElementSibling&&(this.nextElementSibling.style.display='flex')"
+               style="width:100%;aspect-ratio:1/1;object-fit:cover;display:block;border-radius:2px;">` +
+            `<div style="width:100%;aspect-ratio:1/1;background:var(--pale);display:none;align-items:center;justify-content:center;font-size:28px;border-radius:2px;">📚</div>`
           : `<div style="width:100%;aspect-ratio:1/1;background:var(--pale);display:flex;align-items:center;justify-content:center;font-size:28px;border-radius:2px;">📚</div>`;
         return`<div class="photo-stamp" style="width:${sz.box}px;">
           ${imgHtml}
