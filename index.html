@@ -411,7 +411,7 @@ function renderRegisterList(){
         <div class="reg-name">${esc(shop.name)}</div>
         <div class="reg-status" id="stat-${shop.id}">간판 앞에서 사진을 찍어주세요</div>
         <label class="btn-upload-small">
-          <input type="file" accept="image/*" capture="environment" onchange="handleUpload('${shop.id}',this)">
+          <input type="file" accept="image/*" onchange="handleUpload('${shop.id}',this)">
           📸 사진 등록하기
         </label>
       </div>`;
