@@ -139,16 +139,33 @@ header p{font-size:13px;color:rgba(238,240,230,.65);letter-spacing:.04em;margin-
 .modal-close{background:none;border:none;font-size:24px;cursor:pointer;color:#bbb;padding:0 4px;}
 
 /* 스탬프 카드 */
-#stampCard{background:var(--cream);padding:32px 24px;}
+#stampCard{background:var(--cream);padding:28px 20px;}
 .stamp-card-title{text-align:center;margin-bottom:4px;}
 .stamp-card-title h2{font-family:'Noto Serif KR',serif;font-size:20px;font-weight:700;letter-spacing:.04em;}
 .stamp-card-title p{font-size:11px;color:var(--brown);letter-spacing:.16em;margin-top:4px;}
-.stamp-divider{border:none;border-top:1.5px solid var(--border);margin:18px 0;}
-.stamp-grid{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-bottom:4px;}
-.stamp-item{text-align:center;}
-.stamp-circle{border-radius:50%;margin:0 auto 5px;display:flex;align-items:center;justify-content:center;font-weight:700;padding:6px;text-align:center;line-height:1.3;border:2.5px solid;}
-.stamp-circle.earned{background:var(--rust);color:#fff;border-color:var(--rust);box-shadow:inset 0 2px 6px rgba(0,0,0,.22);}
-.stamp-date{color:var(--brown);}
+.stamp-divider{border:none;border-top:1.5px solid var(--border);margin:16px 0;}
+.stamp-grid{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-bottom:4px;}
+
+/* 📸 폴라로이드 사진 카드 */
+.photo-stamp{
+  background:#fff;
+  border-radius:3px;
+  padding:6px 6px 22px;
+  box-shadow:0 2px 8px rgba(0,0,0,.13), 0 1px 2px rgba(0,0,0,.08);
+  text-align:center;
+  flex-shrink:0;
+  transition:transform .2s;
+}
+.photo-stamp:hover{transform:rotate(-1deg) scale(1.03);}
+.photo-stamp-name{
+  font-family:'Noto Serif KR',serif;
+  font-weight:700;
+  color:var(--ink);
+  margin-top:7px;
+  line-height:1.3;
+  word-break:keep-all;
+}
+.photo-stamp-date{color:var(--brown);margin-top:2px;}
 
 .visited-section-title{font-size:12px;font-weight:700;color:var(--brown);letter-spacing:.1em;margin-bottom:10px;}
 .visited-list{display:flex;flex-direction:column;gap:8px;}
@@ -287,13 +304,13 @@ header p{font-size:13px;color:rgba(238,240,230,.65);letter-spacing:.04em;margin-
     </div>
     <div id="stampCard">
       <div class="stamp-card-title">
-        <h2>대구 책방 여행의 기록</h2>
-        <p>DAEGU BOOKSHOP TOUR · 중구</p>
+        <h2>나의 책방 여행기</h2>
+        <p>DAEGU BOOKSHOP TOUR · 대구 중구</p>
       </div>
       <hr class="stamp-divider">
       <div class="stamp-grid" id="stampGrid"></div>
       <hr class="stamp-divider">
-      <div class="visited-section-title">📋 다녀온 책방 리스트</div>
+      <div class="visited-section-title">📋 다녀온 책방</div>
       <div class="visited-list" id="visitedList"></div>
     </div>
     <div class="record-actions">
@@ -580,7 +597,12 @@ function grantAllStamps(){
   const sel=shops.filter(s=>selectedIds.has(s.id));
   const stamps=getStamps();
   const today=new Date().toLocaleDateString('ko-KR');
-  sel.forEach(shop=>{ stamps[shop.id]={date:today}; });
+  sel.forEach(shop=>{
+    stamps[shop.id]={
+      date:today,
+      photo: uploadedPhotos[shop.id]||null   // 📸 사진 저장
+    };
+  });
   saveStamps(stamps);
 
   // 초기화 후 스탬프 카드 표시
@@ -602,42 +624,49 @@ function showRecord(){
 }
 function closeRecord(){document.getElementById('recordModal').classList.add('hidden');}
 
-function stampSizeFor(count){
-  if(count<=3) return {box:88,circle:80,font:12,dateFont:10};
-  if(count<=6) return {box:76,circle:68,font:11,dateFont:10};
-  if(count<=9) return {box:64,circle:58,font:10,dateFont:9};
-  return          {box:54,circle:48,font:9, dateFont:8};
+function photoSizeFor(count){
+  if(count<=2) return {box:160, nameFont:12, dateFont:10};
+  if(count<=4) return {box:130, nameFont:11, dateFont:9};
+  if(count<=6) return {box:108, nameFont:10, dateFont:9};
+  if(count<=9) return {box:88,  nameFont:9,  dateFont:8};
+  return               {box:72,  nameFont:8,  dateFont:7};
 }
 
 function renderStampCard(){
   const stamps=getStamps();
   const visited=shops.filter(s=>stamps[s.id]);
-  const sz=stampSizeFor(visited.length);
+  const sz=photoSizeFor(visited.length);
 
-  // 도장: 다녀온 곳만, 크기 자동 조정
+  // 📸 폴라로이드 사진 카드
   document.getElementById('stampGrid').innerHTML= visited.length
     ? visited.map(s=>{
         const st=stamps[s.id];
-        return`<div class="stamp-item" style="width:${sz.box}px;">
-          <div class="stamp-circle earned" style="width:${sz.circle}px;height:${sz.circle}px;font-size:${sz.font}px;">${esc(s.name)}</div>
-          <div class="stamp-date" style="font-size:${sz.dateFont}px;">${st.date}</div>
+        // 우선순위: 본인 사진 → 책방 제공 간판사진 → 텍스트 플레이스홀더
+        const imgSrc = st.photo || s.signUrl || '';
+        const imgHtml = imgSrc
+          ? `<img src="${esc(imgSrc)}" style="width:100%;aspect-ratio:1/1;object-fit:cover;display:block;border-radius:2px;">`
+          : `<div style="width:100%;aspect-ratio:1/1;background:var(--pale);display:flex;align-items:center;justify-content:center;font-size:28px;border-radius:2px;">📚</div>`;
+        return`<div class="photo-stamp" style="width:${sz.box}px;">
+          ${imgHtml}
+          <div class="photo-stamp-name" style="font-size:${sz.nameFont}px;">${esc(s.name)}</div>
+          <div class="photo-stamp-date" style="font-size:${sz.dateFont}px;">${st.date}</div>
         </div>`;
       }).join('')
-    : `<div style="text-align:center;width:100%;padding:20px 0;color:#bbb;font-size:13px;">아직 스탬프가 없어요</div>`;
+    : `<div style="text-align:center;width:100%;padding:24px 0;color:#aaa;font-size:13px;">아직 방문한 책방이 없어요</div>`;
 
-  // 방문 리스트
+  // 방문 리스트 (카운트 뱃지만 간소하게)
   document.getElementById('visitedList').innerHTML=visited.length
-    ?visited.map((s,i)=>{
-      const st=stamps[s.id];
-      return`<div class="visited-item">
-        <div class="visited-num">${i+1}</div>
-        <div>
-          <div class="visited-name">${esc(s.name)}</div>
-          <div class="visited-meta">${st.date}</div>
-        </div>
-      </div>`;
-    }).join('')
-    :`<div class="empty-record"><span>🗺️</span>아직 방문한 책방이 없어요.<br>책방을 선택하고 사진을 등록해보세요!</div>`;
+    ? visited.map((s,i)=>{
+        const st=stamps[s.id];
+        return`<div class="visited-item">
+          <div class="visited-num">${i+1}</div>
+          <div>
+            <div class="visited-name">${esc(s.name)}</div>
+            <div class="visited-meta">${st.date}</div>
+          </div>
+        </div>`;
+      }).join('')
+    : `<div class="empty-record"><span>🗺️</span>아직 방문한 책방이 없어요.<br>책방을 선택하고 사진을 등록해보세요!</div>`;
 }
 
 function resetStamps(){
@@ -656,7 +685,7 @@ function filterShops(q){
 
 async function shareInsta(){
   try{
-    const canvas=await html2canvas(document.getElementById('stampCard'),{backgroundColor:'#faf6ef',scale:2});
+    const canvas=await html2canvas(document.getElementById('stampCard'),{backgroundColor:'#f8f5ec',scale:2});
     canvas.toBlob(async(blob)=>{
       const file=new File([blob],'대구책방여행기록.png',{type:'image/png'});
       if(navigator.share && navigator.canShare({files:[file]})){
@@ -673,7 +702,7 @@ async function shareInsta(){
 
 async function downloadCard(){
   try{
-    const canvas=await html2canvas(document.getElementById('stampCard'),{backgroundColor:'#faf6ef',scale:2});
+    const canvas=await html2canvas(document.getElementById('stampCard'),{backgroundColor:'#f8f5ec',scale:2});
     const dataUrl=canvas.toDataURL('image/png');
     const isIOS=/iPad|iPhone|iPod/.test(navigator.userAgent);
     if(isIOS){
