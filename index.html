@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>대구 중구 책방 여행</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=Noto+Serif+KR:wght@600;700&display=swap" rel="stylesheet">
+<script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{--ink:#2c2416;--brown:#7a6a55;--cream:#faf6ef;--rust:#b5451b;--gold:#c8923a;--pale:#f2ece0;--border:#d9ceba;}
+body{font-family:'Noto Sans KR',sans-serif;background:var(--pale);color:var(--ink);min-height:100vh;}
+
+/* ── 헤더 ── */
+header{background:var(--ink);color:var(--cream);text-align:center;padding:32px 20px 28px;position:relative;overflow:hidden;}
+header::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(45deg,transparent,transparent 8px,rgba(255,255,255,.03) 8px,rgba(255,255,255,.03) 9px);}
+.header-inner{position:relative;z-index:1;}
+.header-tag{font-size:11px;letter-spacing:.2em;color:var(--gold);text-transform:uppercase;margin-bottom:10px;}
+header h1{font-family:'Noto Serif KR',serif;font-size:clamp(22px,5vw,32px);font-weight:700;line-height:1.3;margin-bottom:8px;}
+header p{font-size:13px;color:rgba(250,246,239,.6);letter-spacing:.04em;margin-bottom:20px;}
+.header-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+.btn-header{display:inline-flex;align-items:center;gap:6px;border:none;border-radius:10px;padding:11px 18px;font-size:13px;font-family:'Noto Sans KR',sans-serif;font-weight:600;cursor:pointer;}
+.btn-header.primary{background:var(--rust);color:#fff;}
+.btn-header.ghost{background:rgba(255,255,255,.12);color:var(--cream);}
+
+/* ── 로딩 ── */
+#loadingBar{background:var(--ink);color:var(--cream);text-align:center;padding:12px;font-size:13px;}
+.hidden{display:none!important;}
+
+/* ══════════════════════════════
+   STEP 1 — 책방 목록
+══════════════════════════════ */
+#viewList{padding-bottom:100px;}
+.page-wrap{max-width:900px;margin:0 auto;padding:32px 20px;}
+.section-title{font-family:'Noto Serif KR',serif;font-size:20px;font-weight:700;margin-bottom:6px;}
+.section-sub{font-size:13px;color:var(--brown);margin-bottom:22px;}
+.shop-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px;}
+
+/* 책방 카드 */
+.shop-card{background:#fff;border-radius:12px;padding:18px;border:2px solid var(--border);transition:all .2s;cursor:pointer;position:relative;}
+.shop-card:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.09);}
+.shop-card.selected{border-color:var(--rust);background:#fffaf8;}
+.shop-card.already-stamped{border-color:#ccc;background:#f9f9f9;opacity:.7;cursor:default;}
+.card-check{position:absolute;top:14px;right:14px;width:24px;height:24px;border-radius:50%;border:2px solid var(--border);background:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;transition:all .2s;}
+.shop-card.selected .card-check{background:var(--rust);border-color:var(--rust);color:#fff;}
+.shop-card.already-stamped .card-check{background:#ccc;border-color:#ccc;color:#fff;}
+.shop-name{font-family:'Noto Serif KR',serif;font-size:16px;font-weight:700;margin-bottom:4px;padding-right:36px;}
+.shop-genre{font-size:11px;color:var(--gold);font-weight:600;margin-bottom:8px;display:inline-block;}
+.shop-desc{font-size:13px;color:#5a5040;line-height:1.75;}
+
+/* 하단 플로팅 버튼 */
+.floating-bar{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--border);padding:14px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px;z-index:100;transform:translateY(100%);transition:transform .3s;}
+.floating-bar.visible{transform:translateY(0);}
+.floating-count{font-size:13px;color:var(--brown);}
+.floating-count strong{color:var(--rust);font-size:16px;}
+.btn-next{flex:1;max-width:240px;padding:13px;background:var(--rust);color:#fff;border:none;border-radius:10px;font-size:15px;font-family:'Noto Sans KR',sans-serif;font-weight:700;cursor:pointer;}
+
+/* ══════════════════════════════
+   STEP 2 — 사진 등록
+══════════════════════════════ */
+#viewRegister{padding-bottom:100px;}
+.back-bar{display:flex;align-items:center;gap:10px;padding:16px 20px;background:#fff;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:10;}
+.btn-back{background:none;border:none;font-size:22px;cursor:pointer;color:var(--brown);line-height:1;}
+.back-title{font-family:'Noto Serif KR',serif;font-size:16px;font-weight:700;}
+.back-sub{font-size:12px;color:var(--brown);margin-left:auto;}
+
+.register-list{max-width:680px;margin:0 auto;padding:24px 20px;display:flex;flex-direction:column;gap:16px;}
+
+/* 등록 아이템 */
+.reg-item{background:#fff;border-radius:12px;padding:16px;border:1.5px solid var(--border);display:flex;gap:14px;align-items:center;}
+.reg-item.uploaded{border-color:var(--rust);}
+.reg-preview{width:72px;height:72px;border-radius:8px;overflow:hidden;background:var(--pale);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:28px;color:#ccc;}
+.reg-preview img{width:100%;height:100%;object-fit:cover;display:block;}
+.reg-info{flex:1;min-width:0;}
+.reg-name{font-family:'Noto Serif KR',serif;font-size:15px;font-weight:700;margin-bottom:4px;}
+.reg-status{font-size:12px;color:var(--brown);margin-bottom:8px;}
+.reg-status.done{color:var(--rust);}
+.btn-upload-small{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border:1.5px solid var(--border);border-radius:8px;background:#fff;font-size:12px;font-family:'Noto Sans KR',sans-serif;cursor:pointer;font-weight:500;color:var(--ink);}
+.btn-upload-small:hover{border-color:var(--rust);color:var(--rust);}
+.btn-upload-small input{display:none;}
+
+.floating-confirm{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--border);padding:14px 20px;z-index:100;}
+.btn-confirm{width:100%;max-width:680px;display:block;margin:0 auto;padding:15px;background:#ccc;color:#fff;border:none;border-radius:10px;font-size:16px;font-family:'Noto Sans KR',sans-serif;font-weight:700;cursor:not-allowed;transition:background .3s;}
+.btn-confirm.ready{background:var(--rust);cursor:pointer;}
+.confirm-hint{text-align:center;font-size:12px;color:var(--brown);margin-top:6px;max-width:680px;margin:6px auto 0;}
+
+/* ══════════════════════════════
+   STEP 3 — 결과
+══════════════════════════════ */
+#viewResult{padding-bottom:120px;}
+.result-header{text-align:center;padding:48px 20px 28px;}
+.result-header .result-icon{font-size:56px;margin-bottom:16px;}
+.result-header h2{font-family:'Noto Serif KR',serif;font-size:22px;font-weight:700;margin-bottom:8px;}
+.result-header p{font-size:14px;color:var(--brown);}
+.result-list{max-width:500px;margin:0 auto;padding:0 20px;display:flex;flex-direction:column;gap:10px;}
+.result-item{background:#fff;border-radius:12px;padding:16px 18px;border:1.5px solid var(--border);display:flex;align-items:center;gap:14px;}
+.result-thumb{width:52px;height:52px;border-radius:8px;overflow:hidden;background:var(--pale);flex-shrink:0;}
+.result-thumb img{width:100%;height:100%;object-fit:cover;}
+.result-shop-name{font-family:'Noto Serif KR',serif;font-size:15px;font-weight:700;flex:1;}
+.result-check{font-size:22px;}
+
+.floating-stamp{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--border);padding:14px 20px;z-index:100;}
+.btn-stamp-all{width:100%;max-width:680px;display:block;margin:0 auto;padding:15px;background:var(--rust);color:#fff;border:none;border-radius:10px;font-size:16px;font-family:'Noto Sans KR',sans-serif;font-weight:700;cursor:pointer;}
+
+/* ══════════════════════════════
+   스탬프 카드 모달
+══════════════════════════════ */
+#recordModal{position:fixed;inset:0;z-index:2000;display:flex;align-items:center;justify-content:center;padding:16px;}
+.modal-overlay{position:absolute;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(3px);}
+.record-box{position:relative;z-index:1;background:#fff;border-radius:16px;width:100%;max-width:560px;max-height:92vh;overflow-y:auto;box-shadow:0 24px 64px rgba(0,0,0,.3);}
+.record-head{padding:18px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:#fff;z-index:1;}
+.record-head h3{font-family:'Noto Serif KR',serif;font-size:17px;font-weight:700;}
+.modal-close{background:none;border:none;font-size:24px;cursor:pointer;color:#bbb;padding:0 4px;}
+
+/* 스탬프 카드 */
+#stampCard{background:var(--cream);padding:32px 24px;}
+.stamp-card-title{text-align:center;margin-bottom:4px;}
+.stamp-card-title h2{font-family:'Noto Serif KR',serif;font-size:20px;font-weight:700;letter-spacing:.04em;}
+.stamp-card-title p{font-size:11px;color:var(--brown);letter-spacing:.16em;margin-top:4px;}
+.stamp-divider{border:none;border-top:1.5px solid var(--border);margin:18px 0;}
+.stamp-grid{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-bottom:4px;}
+.stamp-item{text-align:center;}
+.stamp-circle{border-radius:50%;margin:0 auto 5px;display:flex;align-items:center;justify-content:center;font-weight:700;padding:6px;text-align:center;line-height:1.3;border:2.5px solid;}
+.stamp-circle.earned{background:var(--rust);color:#fff;border-color:var(--rust);box-shadow:inset 0 2px 6px rgba(0,0,0,.18);}
+.stamp-date{color:var(--brown);}
+
+.visited-section-title{font-size:12px;font-weight:700;color:var(--brown);letter-spacing:.1em;margin-bottom:10px;}
+.visited-list{display:flex;flex-direction:column;gap:8px;}
+.visited-item{display:flex;align-items:center;gap:10px;padding:10px 14px;background:#fff;border-radius:8px;border:1px solid var(--border);}
+.visited-num{width:24px;height:24px;border-radius:50%;background:var(--rust);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.visited-name{font-size:14px;font-weight:700;color:var(--ink);}
+.visited-meta{font-size:11px;color:var(--brown);margin-top:2px;}
+.synchro-tag{background:#fff0eb;color:var(--rust);font-size:10px;font-weight:700;padding:2px 7px;border-radius:8px;margin-left:6px;}
+.empty-record{text-align:center;padding:40px 20px;color:var(--brown);}
+.empty-record span{display:block;font-size:40px;margin-bottom:12px;}
+
+.record-actions{padding:14px 20px;border-top:1px solid var(--border);display:flex;gap:10px;}
+.btn-download{flex:1;padding:12px;background:var(--ink);color:#fff;border:none;border-radius:9px;font-size:14px;font-family:'Noto Sans KR',sans-serif;font-weight:600;cursor:pointer;}
+.btn-close-rec{flex:1;padding:12px;background:none;border:1.5px solid var(--border);border-radius:9px;font-size:14px;font-family:'Noto Sans KR',sans-serif;cursor:pointer;color:var(--brown);}
+
+/* 검색 */
+.search-wrap{position:relative;margin-bottom:20px;}
+.search-input{width:100%;padding:12px 16px 12px 42px;border:1.5px solid var(--border);border-radius:10px;font-size:14px;font-family:'Noto Sans KR',sans-serif;background:#fff;color:var(--ink);outline:none;transition:border-color .2s;}
+.search-input:focus{border-color:var(--rust);}
+.search-icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:16px;pointer-events:none;}
+.search-empty{text-align:center;padding:40px 0;color:var(--brown);font-size:14px;grid-column:1/-1;}
+
+/* 인스타 버튼 */
+.btn-insta{flex:1;padding:12px;background:linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);color:#fff;border:none;border-radius:9px;font-size:14px;font-family:'Noto Sans KR',sans-serif;font-weight:600;cursor:pointer;}
+
+/* 토스트 */
+#toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--ink);color:var(--cream);padding:12px 24px;border-radius:24px;font-size:13px;opacity:0;transition:all .3s;pointer-events:none;z-index:9999;white-space:nowrap;}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+@media(max-width:480px){
+  .shop-grid{grid-template-columns:1fr;}
+  .synchro-num{font-size:30px;}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="header-tag">Daegu Jung-gu · Bookshop Tour</div>
+    <h1>대구 중구<br>책방 여행</h1>
+    <p>오래된 골목 사이, 작은 책방들이 피워 올리는 이야기</p>
+    <div class="header-btns">
+      <button class="btn-header ghost" onclick="showRecord()">🎫 내 여행 기록</button>
+    </div>
+  </div>
+</header>
+
+<div id="loadingBar" class="hidden"><div id="loadingMsg">책방 정보를 불러오는 중...</div></div>
+
+<!-- ① 책방 목록 -->
+<div id="viewList">
+  <div class="page-wrap">
+    <div class="section-title">📚 이 동네 책방들</div>
+    <div class="section-sub">다녀온 책방을 선택하세요. 여러 곳을 한꺼번에 선택할 수 있어요.</div>
+    <div class="search-wrap">
+      <span class="search-icon">🔍</span>
+      <input class="search-input" type="text" id="searchInput" placeholder="책방 이름 검색..." oninput="filterShops(this.value)">
+    </div>
+    <div class="shop-grid" id="shopGrid"></div>
+  </div>
+  <div class="floating-bar" id="floatingBar">
+    <div class="floating-count"><strong id="selCount">0</strong>곳 선택됨</div>
+    <button class="btn-next" onclick="goRegister()">📸 사진 등록하기 →</button>
+  </div>
+</div>
+
+<!-- ② 사진 등록 -->
+<div id="viewRegister" class="hidden">
+  <div class="back-bar">
+    <button class="btn-back" onclick="goList()">←</button>
+    <div class="back-title">간판 사진 등록</div>
+    <div class="back-sub" id="registerSub">0/0 등록됨</div>
+  </div>
+  <div class="register-list" id="registerList"></div>
+  <div class="floating-confirm">
+    <button class="btn-confirm" id="btnConfirm" onclick="goResult()">싱크로율 확인하기</button>
+    <div class="confirm-hint" id="confirmHint">모든 책방 사진을 등록하면 확인할 수 있어요</div>
+  </div>
+</div>
+
+<!-- ③ 결과 -->
+<div id="viewResult" class="hidden">
+  <div class="result-header">
+    <div class="result-icon">🎫</div>
+    <h2>방문 인증 완료!</h2>
+    <p>아래 책방들의 스탬프를 받을 수 있어요</p>
+  </div>
+  <div class="result-list" id="resultList"></div>
+  <div class="floating-stamp">
+    <button class="btn-stamp-all" onclick="grantAllStamps()">🎫 스탬프 받기</button>
+  </div>
+</div>
+
+<!-- 스탬프 기록 모달 -->
+<div id="recordModal" class="hidden">
+  <div class="modal-overlay" onclick="closeRecord()"></div>
+  <div class="record-box">
+    <div class="record-head">
+      <h3>🎫 나의 대구 책방 여행 기록</h3>
+      <button class="modal-close" onclick="closeRecord()">×</button>
+    </div>
+    <div id="stampCard">
+      <div class="stamp-card-title">
+        <h2>대구 책방 여행의 기록</h2>
+        <p>DAEGU BOOKSHOP TOUR · 중구</p>
+      </div>
+      <hr class="stamp-divider">
+      <div class="stamp-grid" id="stampGrid"></div>
+      <hr class="stamp-divider">
+      <div class="visited-section-title">📋 다녀온 책방 리스트</div>
+      <div class="visited-list" id="visitedList"></div>
+    </div>
+    <div class="record-actions">
+      <button class="btn-insta" onclick="shareInsta()">📸 인스타 공유</button>
+      <button class="btn-download" onclick="downloadCard()">⬇ 저장</button>
+      <button class="btn-close-rec" onclick="closeRecord()">닫기</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+const SHEET_ID = '1k9hT9kfffJw3_H3Whd_eN71TBT-iP81dhuXYVe0DoZA';
+const SHEET_NAME = '대구 책방 여행';
+// 시트 열: A=책방이름, B=책방소개, C=장르(선택), D=간판사진URL
+
+let shops = [];
+let selectedIds = new Set();   // 방문 선택한 책방
+let uploadedPhotos = {};       // shopId → dataUrl
+
+// ── 유틸 ──
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function stableId(name){let h=0;for(const c of name)h=(Math.imul(31,h)+c.charCodeAt(0))|0;return'shop_'+Math.abs(h).toString(36);}
+function normalizeImgUrl(url){
+  if(!url)return'';
+  const m=url.match(/drive\.google\.com\/file\/d\/([^/]+)/);
+  if(m)return`https://drive.google.com/uc?export=view&id=${m[1]}`;
+  return url;
+}
+
+// ── 구글 시트 ──
+function fetchShops(){
+  return new Promise((resolve,reject)=>{
+    const cb='gsCb_'+Date.now();
+    const s=document.createElement('script');
+    const url=`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json;responseHandler:${cb}&sheet=${encodeURIComponent(SHEET_NAME)}`;
+    window[cb]=(data)=>{
+      delete window[cb];s.remove();
+      try{
+        const rows=data.table.rows;
+        resolve(rows.filter(r=>r.c?.[0]?.v).map(r=>({
+          id:stableId(r.c[0].v),
+          name:r.c[0]?.v||'',
+          desc:r.c[1]?.v||'',
+          genre:r.c[2]?.v||'',
+          signUrl:normalizeImgUrl(r.c[3]?.v||''),
+        })));
+      }catch(e){reject(e);}
+    };
+    s.onerror=()=>{delete window[cb];s.remove();reject(new Error('시트 로드 실패'));};
+    s.src=url;document.head.appendChild(s);
+  });
+}
+
+// ── 스탬프 저장 ──
+function getStamps(){try{return JSON.parse(localStorage.getItem('daegu_stamps')||'{}');}catch{return{};}}
+function saveStamps(obj){localStorage.setItem('daegu_stamps',JSON.stringify(obj));}
+function isStamped(id){return!!getStamps()[id];}
+
+// ── 싱크로율 계산 (재미용, 항상 스탬프 발급) ──
+async function calcSynchro(refUrl, userDataUrl){
+  if(!refUrl) return 80 + Math.floor(Math.random()*20); // 기준 사진 없으면 80~99
+  try{
+    const loadImg=(src)=>new Promise((res,rej)=>{
+      const img=new Image();img.crossOrigin='anonymous';
+      img.onload=()=>res(img);img.onerror=rej;img.src=src;
+    });
+    const [a,b]=await Promise.all([loadImg(refUrl),loadImg(userDataUrl)]);
+    const SIZE=32;
+    const toPixels=(img)=>{
+      const c=document.createElement('canvas');c.width=SIZE;c.height=SIZE;
+      c.getContext('2d').drawImage(img,0,0,SIZE,SIZE);
+      return c.getContext('2d').getImageData(0,0,SIZE,SIZE).data;
+    };
+    const pA=toPixels(a),pB=toPixels(b);
+    let diff=0;
+    for(let i=0;i<pA.length;i+=4) diff+=Math.abs(pA[i]-pB[i])+Math.abs(pA[i+1]-pB[i+1])+Math.abs(pA[i+2]-pB[i+2]);
+    const raw=1-diff/(255*3*SIZE*SIZE);
+    // 재미있는 범위로 보정 (60~99%)
+    return Math.min(99, Math.round(60 + raw * 39));
+  }catch{
+    return 75 + Math.floor(Math.random()*20);
+  }
+}
+
+// ══════════════════
+// STEP 1 — 목록
+// ══════════════════
+function goList(){
+  document.getElementById('viewList').classList.remove('hidden');
+  document.getElementById('viewRegister').classList.add('hidden');
+  document.getElementById('viewResult').classList.add('hidden');
+}
+
+function renderShops(){
+  const grid=document.getElementById('shopGrid');
+  const stamps=getStamps();
+  if(!shops.length){
+    grid.innerHTML=`<div style="grid-column:1/-1;text-align:center;padding:60px 0;color:var(--brown);">
+      <div style="font-size:44px;margin-bottom:14px;">📚</div>
+      책방 정보를 불러오는 중이에요.
+    </div>`;return;
+  }
+  grid.innerHTML='';
+  shops.forEach(shop=>{
+    const stamped=isStamped(shop.id);
+    const sel=selectedIds.has(shop.id);
+    const card=document.createElement('div');
+    card.className='shop-card'+(sel?' selected':'')+(stamped?' already-stamped':'');
+    card.onclick=()=>{ if(stamped)return; toggleSelect(shop.id); };
+    card.innerHTML=`
+      <div class="card-check">${stamped?'✓':sel?'✓':''}</div>
+      <div class="shop-name">${esc(shop.name)}</div>
+      ${shop.genre?`<span class="shop-genre">${esc(shop.genre)}</span>`:''}
+      ${shop.desc?`<p class="shop-desc">${esc(shop.desc)}</p>`:''}
+      ${stamped?`<div style="font-size:12px;color:#b5451b;margin-top:10px;font-weight:600;">✓ 이미 스탬프 완료</div>`:''}`;
+    grid.appendChild(card);
+  });
+}
+
+function toggleSelect(shopId){
+  if(selectedIds.has(shopId)) selectedIds.delete(shopId);
+  else selectedIds.add(shopId);
+  renderShops();
+  updateFloating();
+}
+
+function updateFloating(){
+  const bar=document.getElementById('floatingBar');
+  document.getElementById('selCount').textContent=selectedIds.size;
+  if(selectedIds.size>0) bar.classList.add('visible');
+  else bar.classList.remove('visible');
+}
+
+// ══════════════════
+// STEP 2 — 사진 등록
+// ══════════════════
+function goRegister(){
+  if(!selectedIds.size)return;
+  uploadedPhotos={};
+  document.getElementById('viewList').classList.add('hidden');
+  document.getElementById('viewRegister').classList.remove('hidden');
+  renderRegisterList();
+  updateConfirmBtn();
+}
+
+function renderRegisterList(){
+  const list=document.getElementById('registerList');
+  const sel=shops.filter(s=>selectedIds.has(s.id));
+  list.innerHTML='';
+  sel.forEach(shop=>{
+    const div=document.createElement('div');
+    div.className='reg-item';
+    div.id='reg-'+shop.id;
+    const refImg=shop.signUrl
+      ?`<img src="${esc(shop.signUrl)}" crossorigin="anonymous" style="width:100%;height:100%;object-fit:cover;" onerror="this.parentElement.innerHTML='📷'">`
+      :`📷`;
+    div.innerHTML=`
+      <div style="display:flex;flex-direction:column;gap:6px;align-items:center;flex-shrink:0;">
+        <div style="width:72px;height:72px;border-radius:8px;overflow:hidden;background:var(--pale);display:flex;align-items:center;justify-content:center;font-size:28px;border:1.5px solid var(--border);">
+          ${refImg}
+        </div>
+        <div style="font-size:10px;color:var(--brown);text-align:center;">기준 사진</div>
+      </div>
+      <div style="font-size:20px;color:#ccc;flex-shrink:0;">→</div>
+      <div class="reg-preview" id="prev-${shop.id}" style="font-size:28px;">📷</div>
+      <div class="reg-info">
+        <div class="reg-name">${esc(shop.name)}</div>
+        <div class="reg-status" id="stat-${shop.id}">간판 앞에서 사진을 찍어주세요</div>
+        <label class="btn-upload-small">
+          <input type="file" accept="image/*" capture="environment" onchange="handleUpload('${shop.id}',this)">
+          📸 사진 등록하기
+        </label>
+      </div>`;
+    list.appendChild(div);
+  });
+}
+
+function handleUpload(shopId, input){
+  const file=input.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=(e)=>{
+    uploadedPhotos[shopId]=e.target.result;
+    document.getElementById('prev-'+shopId).innerHTML=`<img src="${e.target.result}">`;
+    const stat=document.getElementById('stat-'+shopId);
+    stat.textContent='✓ 등록 완료';stat.className='reg-status done';
+    document.getElementById('reg-'+shopId).classList.add('uploaded');
+    updateConfirmBtn();
+  };
+  reader.readAsDataURL(file);
+}
+
+function updateConfirmBtn(){
+  const sel=shops.filter(s=>selectedIds.has(s.id));
+  const done=sel.filter(s=>uploadedPhotos[s.id]).length;
+  const total=sel.length;
+  document.getElementById('registerSub').textContent=`${done}/${total} 등록됨`;
+  const btn=document.getElementById('btnConfirm');
+  const hint=document.getElementById('confirmHint');
+  if(done===total && total>0){
+    btn.classList.add('ready');btn.style.cursor='pointer';
+    hint.textContent='모든 사진이 등록됐어요! 싱크로율을 확인해보세요 ✨';
+  }else{
+    btn.classList.remove('ready');
+    hint.textContent=`${total-done}곳 사진이 남아있어요`;
+  }
+}
+
+// ══════════════════
+// STEP 3 — 결과
+// ══════════════════
+async function goResult(){
+  const sel=shops.filter(s=>selectedIds.has(s.id));
+  const allUploaded=sel.every(s=>uploadedPhotos[s.id]);
+  if(!allUploaded)return;
+
+  document.getElementById('viewRegister').classList.add('hidden');
+  document.getElementById('viewResult').classList.remove('hidden');
+
+  const list=document.getElementById('resultList');
+  list.innerHTML='';
+  sel.forEach(shop=>{
+    const div=document.createElement('div');
+    div.className='result-item';
+    div.innerHTML=`
+      <div class="result-thumb"><img src="${uploadedPhotos[shop.id]}"></div>
+      <div class="result-shop-name">${esc(shop.name)}</div>
+      <div class="result-check">✅</div>`;
+    list.appendChild(div);
+  });
+}
+
+function grantAllStamps(){
+  const sel=shops.filter(s=>selectedIds.has(s.id));
+  const stamps=getStamps();
+  const today=new Date().toLocaleDateString('ko-KR');
+  sel.forEach(shop=>{ stamps[shop.id]={date:today}; });
+  saveStamps(stamps);
+
+  // 초기화 후 스탬프 카드 표시
+  selectedIds.clear();
+  uploadedPhotos={};
+  showRecord();
+  goList();
+  renderShops();
+  updateFloating();
+  document.getElementById('viewResult').classList.add('hidden');
+}
+
+// ══════════════════
+// 스탬프 기록 모달
+// ══════════════════
+function showRecord(){
+  renderStampCard();
+  document.getElementById('recordModal').classList.remove('hidden');
+}
+function closeRecord(){document.getElementById('recordModal').classList.add('hidden');}
+
+function stampSizeFor(count){
+  if(count<=3) return {box:88,circle:80,font:12,dateFont:10};
+  if(count<=6) return {box:76,circle:68,font:11,dateFont:10};
+  if(count<=9) return {box:64,circle:58,font:10,dateFont:9};
+  return          {box:54,circle:48,font:9, dateFont:8};
+}
+
+function renderStampCard(){
+  const stamps=getStamps();
+  const visited=shops.filter(s=>stamps[s.id]);
+  const sz=stampSizeFor(visited.length);
+
+  // 도장: 다녀온 곳만, 크기 자동 조정
+  document.getElementById('stampGrid').innerHTML= visited.length
+    ? visited.map(s=>{
+        const st=stamps[s.id];
+        return`<div class="stamp-item" style="width:${sz.box}px;">
+          <div class="stamp-circle earned" style="width:${sz.circle}px;height:${sz.circle}px;font-size:${sz.font}px;">${esc(s.name)}</div>
+          <div class="stamp-date" style="font-size:${sz.dateFont}px;">${st.date}</div>
+        </div>`;
+      }).join('')
+    : `<div style="text-align:center;width:100%;padding:20px 0;color:#bbb;font-size:13px;">아직 스탬프가 없어요</div>`;
+
+  // 방문 리스트
+  document.getElementById('visitedList').innerHTML=visited.length
+    ?visited.map((s,i)=>{
+      const st=stamps[s.id];
+      return`<div class="visited-item">
+        <div class="visited-num">${i+1}</div>
+        <div>
+          <div class="visited-name">${esc(s.name)}</div>
+          <div class="visited-meta">${st.date}</div>
+        </div>
+      </div>`;
+    }).join('')
+    :`<div class="empty-record"><span>🗺️</span>아직 방문한 책방이 없어요.<br>책방을 선택하고 사진을 등록해보세요!</div>`;
+}
+
+function filterShops(q){
+  const keyword=q.trim().toLowerCase();
+  document.querySelectorAll('#shopGrid .shop-card').forEach((card,i)=>{
+    const name=shops[i]?.name||'';
+    card.style.display=(!keyword||name.toLowerCase().includes(keyword))?'':'none';
+  });
+  const anyVisible=[...document.querySelectorAll('#shopGrid .shop-card')].some(c=>c.style.display!=='none');
+  const empty=document.getElementById('searchEmpty');
+  if(empty)empty.remove();
+  if(!anyVisible&&keyword){
+    const d=document.createElement('div');
+    d.id='searchEmpty';d.className='search-empty';
+    d.textContent=`"${q}" 검색 결과가 없어요`;
+    document.getElementById('shopGrid').appendChild(d);
+  }
+}
+
+async function shareInsta(){
+  try{
+    const canvas=await html2canvas(document.getElementById('stampCard'),{backgroundColor:'#faf6ef',scale:2});
+    canvas.toBlob(async(blob)=>{
+      const file=new File([blob],'대구책방여행기록.png',{type:'image/png'});
+      if(navigator.share && navigator.canShare({files:[file]})){
+        await navigator.share({files:[file],title:'대구 책방 여행의 기록'});
+      }else{
+        // 폴백: 이미지 다운로드 후 안내
+        const a=document.createElement('a');
+        a.download='대구책방여행기록.png';a.href=URL.createObjectURL(blob);a.click();
+        showToast('이미지 저장됐어요! 인스타에 직접 올려주세요 📸');
+      }
+    },'image/png');
+  }catch(e){showToast('공유에 실패했어요.');}
+}
+
+async function downloadCard(){
+  try{
+    const canvas=await html2canvas(document.getElementById('stampCard'),{backgroundColor:'#faf6ef',scale:2});
+    const a=document.createElement('a');
+    a.download='대구책방여행기록.png';a.href=canvas.toDataURL('image/png');a.click();
+  }catch{showToast('이미지 저장에 실패했어요.');}
+}
+
+// ── 토스트 ──
+let toastTimer;
+function showToast(msg){
+  const el=document.getElementById('toast');
+  el.textContent=msg;el.classList.add('show');
+  clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove('show'),2800);
+}
+
+// ── 초기화 ──
+async function init(){
+  const bar=document.getElementById('loadingBar');
+  try{
+    bar.classList.remove('hidden');
+    shops=await fetchShops();
+    bar.classList.add('hidden');
+    renderShops();
+  }catch(e){
+    bar.classList.add('hidden');
+    showToast('⚠️ 시트를 불러오지 못했어요. "링크로 공유" 여부를 확인해주세요.');
+    renderShops();
+  }
+}
+init();
+</script>
+</body>
+</html>
