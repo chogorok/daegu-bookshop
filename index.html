@@ -35,21 +35,30 @@ header p{font-size:13px;color:rgba(250,246,239,.6);letter-spacing:.04em;margin-b
 .page-wrap{max-width:900px;margin:0 auto;padding:32px 20px;}
 .section-title{font-family:'Noto Serif KR',serif;font-size:20px;font-weight:700;margin-bottom:6px;}
 .section-sub{font-size:13px;color:var(--brown);margin-bottom:22px;}
-.shop-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px;}
+/* 3열 그리드 (데스크톱) */
+.shop-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
 
 /* 책방 카드 */
-.shop-card{background:#fff;border-radius:12px;padding:18px;border:2px solid var(--border);transition:all .2s;cursor:pointer;position:relative;}
+.shop-card{background:#fff;border-radius:12px;padding:0;border:2px solid var(--border);transition:all .2s;cursor:pointer;position:relative;overflow:hidden;display:flex;flex-direction:column;}
 .shop-card:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.09);}
 .shop-card.selected{border-color:var(--rust);background:#fffaf8;}
 .shop-card.already-stamped{border-color:#ccc;background:#f9f9f9;opacity:.7;cursor:default;}
-.card-check{position:absolute;top:14px;right:14px;width:24px;height:24px;border-radius:50%;border:2px solid var(--border);background:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;transition:all .2s;}
+.card-check{position:absolute;top:10px;right:10px;width:22px;height:22px;border-radius:50%;border:2px solid var(--border);background:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;transition:all .2s;z-index:1;}
 .shop-card.selected .card-check{background:var(--rust);border-color:var(--rust);color:#fff;}
 .shop-card.already-stamped .card-check{background:#ccc;border-color:#ccc;color:#fff;}
-.card-img-wrap{width:100%;aspect-ratio:4/3;border-radius:8px;overflow:hidden;margin-bottom:12px;background:var(--pale);}
+.card-img-wrap{width:100%;aspect-ratio:4/3;overflow:hidden;background:var(--pale);flex-shrink:0;}
 .card-img-wrap img{width:100%;height:100%;object-fit:cover;display:block;}
-.shop-name{font-family:'Noto Serif KR',serif;font-size:16px;font-weight:700;margin-bottom:4px;padding-right:36px;}
-.shop-genre{font-size:11px;color:var(--gold);font-weight:600;margin-bottom:8px;display:inline-block;}
-.shop-desc{font-size:13px;color:#5a5040;line-height:1.75;}
+.card-body{padding:14px 14px 14px 14px;flex:1;}
+.shop-name{font-family:'Noto Serif KR',serif;font-size:15px;font-weight:700;margin-bottom:4px;padding-right:28px;}
+.shop-genre{font-size:11px;color:var(--gold);font-weight:600;margin-bottom:6px;display:inline-block;}
+.shop-desc{font-size:12px;color:#5a5040;line-height:1.65;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+
+/* 페이지 네비게이션 */
+.page-nav{display:flex;align-items:center;justify-content:center;gap:18px;margin-top:18px;padding-bottom:4px;}
+.page-nav-btn{width:40px;height:40px;border-radius:50%;border:1.5px solid var(--border);background:#fff;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;color:var(--ink);flex-shrink:0;}
+.page-nav-btn:hover:not(:disabled){border-color:var(--rust);color:var(--rust);}
+.page-nav-btn:disabled{opacity:.3;cursor:default;}
+.page-indicator{font-size:13px;color:var(--brown);min-width:60px;text-align:center;}
 
 /* 하단 플로팅 버튼 */
 .floating-bar{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--border);padding:14px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px;z-index:100;transform:translateY(100%);transition:transform .3s;}
@@ -155,8 +164,37 @@ header p{font-size:13px;color:rgba(250,246,239,.6);letter-spacing:.04em;margin-b
 #toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--ink);color:var(--cream);padding:12px 24px;border-radius:24px;font-size:13px;opacity:0;transition:all .3s;pointer-events:none;z-index:9999;white-space:nowrap;}
 #toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 
+/* ── Galaxy S23 (≤480px) 모바일 최적화 ── */
 @media(max-width:480px){
-  .shop-grid{grid-template-columns:1fr;}
+  /* 헤더 슬림 */
+  header{padding:20px 0 18px;}
+  .header-tag{font-size:10px;margin-bottom:6px;}
+  header h1{font-size:22px;margin-bottom:4px;}
+  header p{font-size:12px;margin-bottom:12px;}
+  .btn-header{padding:8px 14px;font-size:12px;}
+
+  /* 섹션 헤더 슬림 */
+  .section-title{font-size:16px;margin-bottom:4px;}
+  .section-sub{font-size:11px;margin-bottom:14px;}
+  .search-wrap{margin-bottom:14px;}
+  .search-input{padding:10px 14px 10px 38px;font-size:13px;}
+
+  /* 가로형 카드 — 한 화면에 3개 */
+  .shop-grid{grid-template-columns:1fr;gap:9px;}
+  .shop-card{flex-direction:row;border-radius:10px;min-height:120px;}
+  .card-img-wrap{width:110px;height:auto;aspect-ratio:unset;align-self:stretch;border-radius:0;flex-shrink:0;}
+  .card-img-wrap img{height:100%;}
+  .card-body{padding:10px 10px 10px 12px;}
+  .shop-name{font-size:13px;padding-right:22px;margin-bottom:3px;}
+  .shop-genre{font-size:10px;margin-bottom:4px;}
+  .shop-desc{font-size:11px;-webkit-line-clamp:2;}
+  .card-check{top:8px;right:8px;width:20px;height:20px;font-size:11px;}
+
+  /* 페이지 네비 */
+  .page-nav{margin-top:12px;gap:12px;}
+  .page-nav-btn{width:36px;height:36px;font-size:16px;}
+  .page-indicator{font-size:12px;}
+
   .synchro-num{font-size:30px;}
 }
 </style>
@@ -186,6 +224,11 @@ header p{font-size:13px;color:rgba(250,246,239,.6);letter-spacing:.04em;margin-b
       <input class="search-input" type="text" id="searchInput" placeholder="책방 이름 검색..." oninput="filterShops(this.value)">
     </div>
     <div class="shop-grid" id="shopGrid"></div>
+    <div class="page-nav" id="pageNav">
+      <button class="page-nav-btn" id="btnPrev" onclick="changePage(-1)" disabled>&#8592;</button>
+      <span class="page-indicator" id="pageIndicator"></span>
+      <button class="page-nav-btn" id="btnNext" onclick="changePage(1)" disabled>&#8594;</button>
+    </div>
   </div>
   <div class="floating-bar" id="floatingBar">
     <div class="floating-count"><strong id="selCount">0</strong>곳 선택됨</div>
@@ -259,6 +302,9 @@ const SHEET_NAME = '대구 책방 여행';
 let shops = [];
 let selectedIds = new Set();   // 방문 선택한 책방
 let uploadedPhotos = {};       // shopId → dataUrl
+let currentPage = 0;
+let searchQuery = '';
+const PAGE_SIZE = 3;
 
 // ── 유틸 ──
 function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
@@ -336,6 +382,11 @@ function goList(){
   document.getElementById('viewResult').classList.add('hidden');
 }
 
+function getFilteredShops(){
+  const q=searchQuery.trim().toLowerCase();
+  return q ? shops.filter(s=>s.name.toLowerCase().includes(q)) : shops;
+}
+
 function renderShops(){
   const grid=document.getElementById('shopGrid');
   const stamps=getStamps();
@@ -343,24 +394,60 @@ function renderShops(){
     grid.innerHTML=`<div style="grid-column:1/-1;text-align:center;padding:60px 0;color:var(--brown);">
       <div style="font-size:44px;margin-bottom:14px;">📚</div>
       책방 정보를 불러오는 중이에요.
-    </div>`;return;
+    </div>`;
+    updatePageNav(0,0);return;
   }
+  const filtered=getFilteredShops();
+  const totalPages=Math.max(1,Math.ceil(filtered.length/PAGE_SIZE));
+  currentPage=Math.max(0,Math.min(currentPage,totalPages-1));
+  const pageShops=filtered.slice(currentPage*PAGE_SIZE,(currentPage+1)*PAGE_SIZE);
+
   grid.innerHTML='';
-  shops.forEach(shop=>{
+  if(!filtered.length){
+    const d=document.createElement('div');
+    d.className='search-empty';d.style.gridColumn='1/-1';
+    d.textContent=`"${searchQuery}" 검색 결과가 없어요`;
+    grid.appendChild(d);
+    updatePageNav(0,0);return;
+  }
+
+  pageShops.forEach(shop=>{
     const stamped=isStamped(shop.id);
     const sel=selectedIds.has(shop.id);
     const card=document.createElement('div');
     card.className='shop-card'+(sel?' selected':'')+(stamped?' already-stamped':'');
     card.onclick=()=>{ if(stamped)return; toggleSelect(shop.id); };
     card.innerHTML=`
-      <div class="card-check">${stamped?'✓':sel?'✓':''}</div>
+      <div class="card-check">${stamped||sel?'✓':''}</div>
       ${shop.signUrl?`<div class="card-img-wrap"><img src="${esc(shop.signUrl)}" loading="lazy" alt="${esc(shop.name)} 간판" onerror="this.parentElement.style.display='none'"></div>`:''}
-      <div class="shop-name">${esc(shop.name)}</div>
-      ${shop.genre?`<span class="shop-genre">${esc(shop.genre)}</span>`:''}
-      ${shop.desc?`<p class="shop-desc">${esc(shop.desc)}</p>`:''}
-      ${stamped?`<div style="font-size:12px;color:#b5451b;margin-top:10px;font-weight:600;">✓ 이미 스탬프 완료</div>`:''}`;
+      <div class="card-body">
+        <div class="shop-name">${esc(shop.name)}</div>
+        ${shop.genre?`<span class="shop-genre">${esc(shop.genre)}</span>`:''}
+        ${shop.desc?`<p class="shop-desc">${esc(shop.desc)}</p>`:''}
+        ${stamped?`<div style="font-size:11px;color:#b5451b;margin-top:8px;font-weight:600;">✓ 이미 스탬프 완료</div>`:''}
+      </div>`;
     grid.appendChild(card);
   });
+  updatePageNav(currentPage,totalPages);
+}
+
+function updatePageNav(page,total){
+  const prev=document.getElementById('btnPrev');
+  const next=document.getElementById('btnNext');
+  const ind=document.getElementById('pageIndicator');
+  if(total<=1){
+    document.getElementById('pageNav').style.display='none';return;
+  }
+  document.getElementById('pageNav').style.display='';
+  prev.disabled=page<=0;
+  next.disabled=page>=total-1;
+  ind.textContent=`${page+1} / ${total}`;
+}
+
+function changePage(dir){
+  currentPage+=dir;
+  renderShops();
+  window.scrollTo({top:0,behavior:'smooth'});
 }
 
 function toggleSelect(shopId){
@@ -548,20 +635,9 @@ function resetStamps(){
 }
 
 function filterShops(q){
-  const keyword=q.trim().toLowerCase();
-  document.querySelectorAll('#shopGrid .shop-card').forEach((card,i)=>{
-    const name=shops[i]?.name||'';
-    card.style.display=(!keyword||name.toLowerCase().includes(keyword))?'':'none';
-  });
-  const anyVisible=[...document.querySelectorAll('#shopGrid .shop-card')].some(c=>c.style.display!=='none');
-  const empty=document.getElementById('searchEmpty');
-  if(empty)empty.remove();
-  if(!anyVisible&&keyword){
-    const d=document.createElement('div');
-    d.id='searchEmpty';d.className='search-empty';
-    d.textContent=`"${q}" 검색 결과가 없어요`;
-    document.getElementById('shopGrid').appendChild(d);
-  }
+  searchQuery=q;
+  currentPage=0;
+  renderShops();
 }
 
 async function shareInsta(){
