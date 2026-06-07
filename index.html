@@ -396,7 +396,7 @@ function renderRegisterList(){
     div.className='reg-item';
     div.id='reg-'+shop.id;
     const refImg=shop.signUrl
-      ?`<img src="${esc(shop.signUrl)}" crossorigin="anonymous" style="width:100%;height:100%;object-fit:cover;" onerror="this.parentElement.innerHTML='📷'">`
+      ?`<img src="${esc(shop.signUrl)}" style="width:100%;height:100%;object-fit:cover;" onerror="this.parentElement.innerHTML='📷'">`
       :`📷`;
     div.innerHTML=`
       <div style="display:flex;flex-direction:column;gap:6px;align-items:center;flex-shrink:0;">
