@@ -3,29 +3,43 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>대구 중구 책방 여행</title>
+<title>대구 책방 여행기</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=Noto+Serif+KR:wght@600;700&display=swap" rel="stylesheet">
 <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
-:root{--ink:#2c2416;--brown:#7a6a55;--cream:#faf6ef;--rust:#b5451b;--gold:#c8923a;--pale:#f2ece0;--border:#d9ceba;}
+/* 초고록 크림 & 그린 팔레트 */
+:root{
+  --ink:#1a2e1a;
+  --brown:#4e6840;
+  --cream:#f8f5ec;
+  --rust:#3a6640;
+  --gold:#6a9a50;
+  --pale:#eef3e6;
+  --border:#c2d4ae;
+  --header:#2a3d28;
+  --header-accent:#4a7a3a;
+}
 body{font-family:'Noto Sans KR',sans-serif;background:var(--pale);color:var(--ink);min-height:100vh;}
 
 /* ── 헤더 ── */
-header{background:var(--ink);color:var(--cream);text-align:center;padding:32px 20px 28px;position:relative;overflow:hidden;}
-header::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(45deg,transparent,transparent 8px,rgba(255,255,255,.03) 8px,rgba(255,255,255,.03) 9px);}
+header{background:var(--header);color:var(--cream);text-align:center;padding:32px 20px 28px;position:relative;overflow:hidden;}
+header::before{content:'';position:absolute;inset:0;
+  background:repeating-linear-gradient(135deg,transparent,transparent 12px,rgba(255,255,255,.025) 12px,rgba(255,255,255,.025) 13px);}
+header::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--header-accent),#8fc46a,var(--header-accent));}
 .header-inner{position:relative;z-index:1;}
-.header-tag{font-size:11px;letter-spacing:.2em;color:var(--gold);text-transform:uppercase;margin-bottom:10px;}
+.header-tag{font-size:11px;letter-spacing:.22em;color:#8fc46a;text-transform:uppercase;margin-bottom:10px;font-weight:500;}
 header h1{font-family:'Noto Serif KR',serif;font-size:clamp(22px,5vw,32px);font-weight:700;line-height:1.3;margin-bottom:8px;}
-header p{font-size:13px;color:rgba(250,246,239,.6);letter-spacing:.04em;margin-bottom:20px;}
+header p{font-size:13px;color:rgba(238,240,230,.65);letter-spacing:.04em;margin-bottom:20px;}
 .header-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
 .btn-header{display:inline-flex;align-items:center;gap:6px;border:none;border-radius:10px;padding:11px 18px;font-size:13px;font-family:'Noto Sans KR',sans-serif;font-weight:600;cursor:pointer;}
-.btn-header.primary{background:var(--rust);color:#fff;}
-.btn-header.ghost{background:rgba(255,255,255,.12);color:var(--cream);}
+.btn-header.primary{background:var(--gold);color:#fff;}
+.btn-header.ghost{background:rgba(255,255,255,.13);color:var(--cream);border:1px solid rgba(255,255,255,.2);}
+.btn-header.ghost:hover{background:rgba(255,255,255,.22);}
 
 /* ── 로딩 ── */
-#loadingBar{background:var(--ink);color:var(--cream);text-align:center;padding:12px;font-size:13px;}
+#loadingBar{background:var(--header);color:var(--cream);text-align:center;padding:12px;font-size:13px;}
 .hidden{display:none!important;}
 
 /* ══════════════════════════════
@@ -41,17 +55,17 @@ header p{font-size:13px;color:rgba(250,246,239,.6);letter-spacing:.04em;margin-b
 /* 책방 카드 */
 .shop-card{background:#fff;border-radius:12px;padding:0;border:2px solid var(--border);transition:all .2s;cursor:pointer;position:relative;overflow:hidden;display:flex;flex-direction:column;}
 .shop-card:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.09);}
-.shop-card.selected{border-color:var(--rust);background:#fffaf8;}
-.shop-card.already-stamped{border-color:#ccc;background:#f9f9f9;opacity:.7;cursor:default;}
+.shop-card.selected{border-color:var(--rust);background:#f0f7ec;}
+.shop-card.already-stamped{border-color:#b8cfaa;background:#f3f7ee;opacity:.75;cursor:default;}
 .card-check{position:absolute;top:10px;right:10px;width:22px;height:22px;border-radius:50%;border:2px solid var(--border);background:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;transition:all .2s;z-index:1;}
 .shop-card.selected .card-check{background:var(--rust);border-color:var(--rust);color:#fff;}
-.shop-card.already-stamped .card-check{background:#ccc;border-color:#ccc;color:#fff;}
+.shop-card.already-stamped .card-check{background:var(--gold);border-color:var(--gold);color:#fff;}
 .card-img-wrap{width:100%;aspect-ratio:4/3;overflow:hidden;background:var(--pale);flex-shrink:0;}
 .card-img-wrap img{width:100%;height:100%;object-fit:cover;display:block;}
 .card-body{padding:14px 14px 14px 14px;flex:1;}
 .shop-name{font-family:'Noto Serif KR',serif;font-size:15px;font-weight:700;margin-bottom:4px;padding-right:28px;}
 .shop-genre{font-size:11px;color:var(--gold);font-weight:600;margin-bottom:6px;display:inline-block;}
-.shop-desc{font-size:12px;color:#5a5040;line-height:1.65;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.shop-desc{font-size:12px;color:#4a5e3c;line-height:1.65;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
 
 /* 페이지 네비게이션 */
 .page-nav{display:flex;align-items:center;justify-content:center;gap:18px;margin-top:18px;padding-bottom:4px;}
@@ -133,7 +147,7 @@ header p{font-size:13px;color:rgba(250,246,239,.6);letter-spacing:.04em;margin-b
 .stamp-grid{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-bottom:4px;}
 .stamp-item{text-align:center;}
 .stamp-circle{border-radius:50%;margin:0 auto 5px;display:flex;align-items:center;justify-content:center;font-weight:700;padding:6px;text-align:center;line-height:1.3;border:2.5px solid;}
-.stamp-circle.earned{background:var(--rust);color:#fff;border-color:var(--rust);box-shadow:inset 0 2px 6px rgba(0,0,0,.18);}
+.stamp-circle.earned{background:var(--rust);color:#fff;border-color:var(--rust);box-shadow:inset 0 2px 6px rgba(0,0,0,.22);}
 .stamp-date{color:var(--brown);}
 
 .visited-section-title{font-size:12px;font-weight:700;color:var(--brown);letter-spacing:.1em;margin-bottom:10px;}
@@ -142,7 +156,7 @@ header p{font-size:13px;color:rgba(250,246,239,.6);letter-spacing:.04em;margin-b
 .visited-num{width:24px;height:24px;border-radius:50%;background:var(--rust);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
 .visited-name{font-size:14px;font-weight:700;color:var(--ink);}
 .visited-meta{font-size:11px;color:var(--brown);margin-top:2px;}
-.synchro-tag{background:#fff0eb;color:var(--rust);font-size:10px;font-weight:700;padding:2px 7px;border-radius:8px;margin-left:6px;}
+.synchro-tag{background:#e6f2de;color:var(--rust);font-size:10px;font-weight:700;padding:2px 7px;border-radius:8px;margin-left:6px;}
 .empty-record{text-align:center;padding:40px 20px;color:var(--brown);}
 .empty-record span{display:block;font-size:40px;margin-bottom:12px;}
 
@@ -203,11 +217,11 @@ header p{font-size:13px;color:rgba(250,246,239,.6);letter-spacing:.04em;margin-b
 
 <header>
   <div class="header-inner">
-    <div class="header-tag">Daegu Jung-gu · Bookshop Tour</div>
-    <h1>대구 중구<br>책방 여행</h1>
-    <p>오래된 골목 사이, 작은 책방들이 피워 올리는 이야기</p>
+    <div class="header-tag">Daegu · Bookshop Tour</div>
+    <h1>대구 책방<br>여행기</h1>
+    <p>한 권의 책이 주는 여행의 여운</p>
     <div class="header-btns">
-      <button class="btn-header ghost" onclick="showRecord()">🎫 내 여행 기록</button>
+      <button class="btn-header ghost" onclick="showRecord()">🎫 나의 책방 여행 기록</button>
     </div>
   </div>
 </header>
@@ -217,8 +231,8 @@ header p{font-size:13px;color:rgba(250,246,239,.6);letter-spacing:.04em;margin-b
 <!-- ① 책방 목록 -->
 <div id="viewList">
   <div class="page-wrap">
-    <div class="section-title">📚 이 동네 책방들</div>
-    <div class="section-sub">다녀온 책방을 선택하세요. 여러 곳을 한꺼번에 선택할 수 있어요.</div>
+    <div class="section-title">📚 대구의 소중한 책방들</div>
+    <div class="section-sub">다녀온 책방을 선택하고, 간판 사진을 업로드해 주세요. 책방 여행 스탬프를 만들어 드려요.</div>
     <div class="search-wrap">
       <span class="search-icon">🔍</span>
       <input class="search-input" type="text" id="searchInput" placeholder="책방 이름 검색..." oninput="filterShops(this.value)">
@@ -424,7 +438,7 @@ function renderShops(){
         <div class="shop-name">${esc(shop.name)}</div>
         ${shop.genre?`<span class="shop-genre">${esc(shop.genre)}</span>`:''}
         ${shop.desc?`<p class="shop-desc">${esc(shop.desc)}</p>`:''}
-        ${stamped?`<div style="font-size:11px;color:#b5451b;margin-top:8px;font-weight:600;">✓ 이미 스탬프 완료</div>`:''}
+        ${stamped?`<div style="font-size:11px;color:#3a6640;margin-top:8px;font-weight:600;">✓ 이미 스탬프 완료</div>`:''}
       </div>`;
     grid.appendChild(card);
   });
