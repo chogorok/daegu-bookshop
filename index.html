@@ -82,53 +82,6 @@ header p{font-size:13px;color:rgba(238,240,230,.65);letter-spacing:.04em;margin-
 .btn-next{flex:1;max-width:240px;padding:13px;background:var(--rust);color:#fff;border:none;border-radius:10px;font-size:15px;font-family:'Noto Sans KR',sans-serif;font-weight:700;cursor:pointer;}
 
 /* ══════════════════════════════
-   STEP 2 — 사진 등록
-══════════════════════════════ */
-#viewRegister{padding-bottom:100px;}
-.back-bar{display:flex;align-items:center;gap:10px;padding:16px 20px;background:#fff;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:10;}
-.btn-back{background:none;border:none;font-size:22px;cursor:pointer;color:var(--brown);line-height:1;}
-.back-title{font-family:'Noto Serif KR',serif;font-size:16px;font-weight:700;}
-.back-sub{font-size:12px;color:var(--brown);margin-left:auto;}
-
-.register-list{max-width:680px;margin:0 auto;padding:24px 20px;display:flex;flex-direction:column;gap:16px;}
-
-/* 등록 아이템 */
-.reg-item{background:#fff;border-radius:12px;padding:16px;border:1.5px solid var(--border);display:flex;gap:14px;align-items:center;}
-.reg-item.uploaded{border-color:var(--rust);}
-.reg-preview{width:72px;height:72px;border-radius:8px;overflow:hidden;background:var(--pale);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:28px;color:#ccc;}
-.reg-preview img{width:100%;height:100%;object-fit:cover;display:block;}
-.reg-info{flex:1;min-width:0;}
-.reg-name{font-family:'Noto Serif KR',serif;font-size:15px;font-weight:700;margin-bottom:4px;}
-.reg-status{font-size:12px;color:var(--brown);margin-bottom:8px;}
-.reg-status.done{color:var(--rust);}
-.btn-upload-small{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border:1.5px solid var(--border);border-radius:8px;background:#fff;font-size:12px;font-family:'Noto Sans KR',sans-serif;cursor:pointer;font-weight:500;color:var(--ink);}
-.btn-upload-small:hover{border-color:var(--rust);color:var(--rust);}
-.btn-upload-small input{display:none;}
-
-.floating-confirm{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--border);padding:14px 20px;z-index:100;}
-.btn-confirm{width:100%;max-width:680px;display:block;margin:0 auto;padding:15px;background:#ccc;color:#fff;border:none;border-radius:10px;font-size:16px;font-family:'Noto Sans KR',sans-serif;font-weight:700;cursor:not-allowed;transition:background .3s;}
-.btn-confirm.ready{background:var(--rust);cursor:pointer;}
-.confirm-hint{text-align:center;font-size:12px;color:var(--brown);margin-top:6px;max-width:680px;margin:6px auto 0;}
-
-/* ══════════════════════════════
-   STEP 3 — 결과
-══════════════════════════════ */
-#viewResult{padding-bottom:120px;}
-.result-header{text-align:center;padding:48px 20px 28px;}
-.result-header .result-icon{font-size:56px;margin-bottom:16px;}
-.result-header h2{font-family:'Noto Serif KR',serif;font-size:22px;font-weight:700;margin-bottom:8px;}
-.result-header p{font-size:14px;color:var(--brown);}
-.result-list{max-width:500px;margin:0 auto;padding:0 20px;display:flex;flex-direction:column;gap:10px;}
-.result-item{background:#fff;border-radius:12px;padding:16px 18px;border:1.5px solid var(--border);display:flex;align-items:center;gap:14px;}
-.result-thumb{width:52px;height:52px;border-radius:8px;overflow:hidden;background:var(--pale);flex-shrink:0;}
-.result-thumb img{width:100%;height:100%;object-fit:cover;}
-.result-shop-name{font-family:'Noto Serif KR',serif;font-size:15px;font-weight:700;flex:1;}
-.result-check{font-size:22px;}
-
-.floating-stamp{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--border);padding:14px 20px;z-index:100;}
-.btn-stamp-all{width:100%;max-width:680px;display:block;margin:0 auto;padding:15px;background:var(--rust);color:#fff;border:none;border-radius:10px;font-size:16px;font-family:'Noto Sans KR',sans-serif;font-weight:700;cursor:pointer;}
-
-/* ══════════════════════════════
    스탬프 카드 모달
 ══════════════════════════════ */
 #recordModal{position:fixed;inset:0;z-index:2000;display:flex;align-items:center;justify-content:center;padding:16px;}
@@ -249,7 +202,7 @@ header p{font-size:13px;color:rgba(238,240,230,.65);letter-spacing:.04em;margin-
 <div id="viewList">
   <div class="page-wrap">
     <div class="section-title">📚 대구의 소중한 책방들</div>
-    <div class="section-sub">다녀온 책방을 선택하고, 간판 사진을 업로드해 주세요.<br>책방 여행 스탬프를 만들어 드려요.</div>
+    <div class="section-sub">다녀온 책방을 선택하면 스탬프를 만들어 드려요.</div>
     <div class="search-wrap">
       <span class="search-icon">🔍</span>
       <input class="search-input" type="text" id="searchInput" placeholder="책방 이름 검색..." oninput="filterShops(this.value)">
@@ -263,34 +216,7 @@ header p{font-size:13px;color:rgba(238,240,230,.65);letter-spacing:.04em;margin-
   </div>
   <div class="floating-bar" id="floatingBar">
     <div class="floating-count"><strong id="selCount">0</strong>곳 선택됨</div>
-    <button class="btn-next" onclick="goRegister()">📸 사진 등록하기 →</button>
-  </div>
-</div>
-
-<!-- ② 사진 등록 -->
-<div id="viewRegister" class="hidden">
-  <div class="back-bar">
-    <button class="btn-back" onclick="goList()">←</button>
-    <div class="back-title">간판 사진 등록</div>
-    <div class="back-sub" id="registerSub">0/0 등록됨</div>
-  </div>
-  <div class="register-list" id="registerList"></div>
-  <div class="floating-confirm">
-    <button class="btn-confirm" id="btnConfirm" onclick="goResult()">싱크로율 확인하기</button>
-    <div class="confirm-hint" id="confirmHint">모든 책방 사진을 등록하면 확인할 수 있어요</div>
-  </div>
-</div>
-
-<!-- ③ 결과 -->
-<div id="viewResult" class="hidden">
-  <div class="result-header">
-    <div class="result-icon">🎫</div>
-    <h2>방문 인증 완료!</h2>
-    <p>아래 책방들의 스탬프를 받을 수 있어요</p>
-  </div>
-  <div class="result-list" id="resultList"></div>
-  <div class="floating-stamp">
-    <button class="btn-stamp-all" onclick="grantAllStamps()">🎫 스탬프 받기</button>
+    <button class="btn-next" onclick="quickStamp()">🎫 스탬프 받기</button>
   </div>
 </div>
 
@@ -496,123 +422,22 @@ function updateFloating(){
 }
 
 // ══════════════════
-// STEP 2 — 사진 등록
+// 스탬프 찍기 (선택 → 바로 등록)
 // ══════════════════
-function goRegister(){
-  if(!selectedIds.size)return;
-  uploadedPhotos={};
-  document.getElementById('viewList').classList.add('hidden');
-  document.getElementById('viewRegister').classList.remove('hidden');
-  renderRegisterList();
-  updateConfirmBtn();
-}
+function quickStamp(){
+  if(!selectedIds.size) return;
+  const names = shops.filter(s=>selectedIds.has(s.id)).map(s=>s.name).join(', ');
+  if(!confirm(`선택한 ${selectedIds.size}곳에 스탬프를 찍을까요?\n\n${names}`)) return;
 
-function renderRegisterList(){
-  const list=document.getElementById('registerList');
-  const sel=shops.filter(s=>selectedIds.has(s.id));
-  list.innerHTML='';
-  sel.forEach(shop=>{
-    const div=document.createElement('div');
-    div.className='reg-item';
-    div.id='reg-'+shop.id;
-    const refImg=shop.signUrl
-      ?`<img src="${esc(shop.signUrl)}" style="width:100%;height:100%;object-fit:cover;" onerror="this.parentElement.innerHTML='📷'">`
-      :`📷`;
-    div.innerHTML=`
-      <div style="display:flex;flex-direction:column;gap:6px;align-items:center;flex-shrink:0;">
-        <div style="width:72px;height:72px;border-radius:8px;overflow:hidden;background:var(--pale);display:flex;align-items:center;justify-content:center;font-size:28px;border:1.5px solid var(--border);">
-          ${refImg}
-        </div>
-        <div style="font-size:10px;color:var(--brown);text-align:center;">기준 사진</div>
-      </div>
-      <div style="font-size:20px;color:#ccc;flex-shrink:0;">→</div>
-      <div class="reg-preview" id="prev-${shop.id}" style="font-size:28px;">📷</div>
-      <div class="reg-info">
-        <div class="reg-name">${esc(shop.name)}</div>
-        <div class="reg-status" id="stat-${shop.id}">간판 앞에서 사진을 찍어주세요</div>
-        <label class="btn-upload-small">
-          <input type="file" accept="image/*" onchange="handleUpload('${shop.id}',this)">
-          📸 사진 등록하기
-        </label>
-      </div>`;
-    list.appendChild(div);
-  });
-}
-
-function handleUpload(shopId, input){
-  const file=input.files[0];if(!file)return;
-  const reader=new FileReader();
-  reader.onload=(e)=>{
-    uploadedPhotos[shopId]=e.target.result;
-    document.getElementById('prev-'+shopId).innerHTML=`<img src="${e.target.result}">`;
-    const stat=document.getElementById('stat-'+shopId);
-    stat.textContent='✓ 등록 완료';stat.className='reg-status done';
-    document.getElementById('reg-'+shopId).classList.add('uploaded');
-    updateConfirmBtn();
-  };
-  reader.readAsDataURL(file);
-}
-
-function updateConfirmBtn(){
-  const sel=shops.filter(s=>selectedIds.has(s.id));
-  const done=sel.filter(s=>uploadedPhotos[s.id]).length;
-  const total=sel.length;
-  document.getElementById('registerSub').textContent=`${done}/${total} 등록됨`;
-  const btn=document.getElementById('btnConfirm');
-  const hint=document.getElementById('confirmHint');
-  if(done===total && total>0){
-    btn.classList.add('ready');btn.style.cursor='pointer';
-    hint.textContent='모든 사진이 등록됐어요! 싱크로율을 확인해보세요 ✨';
-  }else{
-    btn.classList.remove('ready');
-    hint.textContent=`${total-done}곳 사진이 남아있어요`;
-  }
-}
-
-// ══════════════════
-// STEP 3 — 결과
-// ══════════════════
-async function goResult(){
-  const sel=shops.filter(s=>selectedIds.has(s.id));
-  const allUploaded=sel.every(s=>uploadedPhotos[s.id]);
-  if(!allUploaded)return;
-
-  document.getElementById('viewRegister').classList.add('hidden');
-  document.getElementById('viewResult').classList.remove('hidden');
-
-  const list=document.getElementById('resultList');
-  list.innerHTML='';
-  sel.forEach(shop=>{
-    const div=document.createElement('div');
-    div.className='result-item';
-    div.innerHTML=`
-      <div class="result-thumb"><img src="${uploadedPhotos[shop.id]}"></div>
-      <div class="result-shop-name">${esc(shop.name)}</div>
-      <div class="result-check">✅</div>`;
-    list.appendChild(div);
-  });
-}
-
-function grantAllStamps(){
-  const sel=shops.filter(s=>selectedIds.has(s.id));
-  const stamps=getStamps();
-  const today=new Date().toLocaleDateString('ko-KR');
-  sel.forEach(shop=>{
-    stamps[shop.id]={
-      date:today,
-      photo: uploadedPhotos[shop.id]||null   // 📸 사진 저장
-    };
-  });
+  const stamps = getStamps();
+  const today  = new Date().toLocaleDateString('ko-KR');
+  selectedIds.forEach(id => { stamps[id] = {date: today}; });
   saveStamps(stamps);
 
-  // 초기화 후 스탬프 카드 표시
   selectedIds.clear();
-  uploadedPhotos={};
   showRecord();
-  goList();
   renderShops();
   updateFloating();
-  document.getElementById('viewResult').classList.add('hidden');
 }
 
 // ══════════════════
@@ -641,8 +466,7 @@ function renderStampCard(){
   document.getElementById('stampGrid').innerHTML= visited.length
     ? visited.map(s=>{
         const st=stamps[s.id];
-        // 우선순위: 본인 사진 → 책방 제공 간판사진 → 텍스트 플레이스홀더
-        const imgSrc = st.photo || s.signUrl || '';
+        const imgSrc = s.signUrl || '';
         const imgHtml = imgSrc
           ? `<img src="${esc(imgSrc)}" style="width:100%;aspect-ratio:1/1;object-fit:cover;display:block;border-radius:2px;">`
           : `<div style="width:100%;aspect-ratio:1/1;background:var(--pale);display:flex;align-items:center;justify-content:center;font-size:28px;border-radius:2px;">📚</div>`;
@@ -740,7 +564,7 @@ async function downloadCard(){
     const grid = wrap.querySelector('#_captureGrid');
     visited.forEach(s => {
       const st = stamps[s.id];
-      const imgSrc = st.photo || s.signUrl || '';
+      const imgSrc = s.signUrl || '';
       const card = document.createElement('div');
       card.style.cssText = 'background:#fff;border-radius:3px;padding:5px 5px 16px;'+
         'box-shadow:0 2px 6px rgba(0,0,0,.13);text-align:center;';
