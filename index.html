@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
@@ -45,6 +45,8 @@ header p{font-size:13px;color:rgba(250,246,239,.6);letter-spacing:.04em;margin-b
 .card-check{position:absolute;top:14px;right:14px;width:24px;height:24px;border-radius:50%;border:2px solid var(--border);background:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;transition:all .2s;}
 .shop-card.selected .card-check{background:var(--rust);border-color:var(--rust);color:#fff;}
 .shop-card.already-stamped .card-check{background:#ccc;border-color:#ccc;color:#fff;}
+.card-img-wrap{width:100%;aspect-ratio:4/3;border-radius:8px;overflow:hidden;margin-bottom:12px;background:var(--pale);}
+.card-img-wrap img{width:100%;height:100%;object-fit:cover;display:block;}
 .shop-name{font-family:'Noto Serif KR',serif;font-size:16px;font-weight:700;margin-bottom:4px;padding-right:36px;}
 .shop-genre{font-size:11px;color:var(--gold);font-weight:600;margin-bottom:8px;display:inline-block;}
 .shop-desc{font-size:13px;color:#5a5040;line-height:1.75;}
@@ -352,6 +354,7 @@ function renderShops(){
     card.onclick=()=>{ if(stamped)return; toggleSelect(shop.id); };
     card.innerHTML=`
       <div class="card-check">${stamped?'✓':sel?'✓':''}</div>
+      ${shop.signUrl?`<div class="card-img-wrap"><img src="${esc(shop.signUrl)}" loading="lazy" alt="${esc(shop.name)} 간판" onerror="this.parentElement.style.display='none'"></div>`:''}
       <div class="shop-name">${esc(shop.name)}</div>
       ${shop.genre?`<span class="shop-genre">${esc(shop.genre)}</span>`:''}
       ${shop.desc?`<p class="shop-desc">${esc(shop.desc)}</p>`:''}
