@@ -190,7 +190,7 @@ header p{font-size:13px;color:rgba(238,240,230,.65);letter-spacing:.04em;margin-
   <div class="header-inner">
     <div class="header-tag">Daegu · Bookshop Tour</div>
     <h1>대구 책방을<br>기록하다</h1>
-    <p>한 권의 책이 주는 여행의 여운</p>
+    <p>한 권의 책이 주는 여운</p>
     <div class="header-btns">
       <button class="btn-header ghost" onclick="showRecord()">🎫 나의 대구 책방 기록</button>
     </div>
@@ -236,7 +236,7 @@ header p{font-size:13px;color:rgba(238,240,230,.65);letter-spacing:.04em;margin-
       </div>
       <hr class="stamp-divider">
       <div class="stamp-grid" id="stampGrid"></div>
-      <div class="stamp-footer">대구 책방을 기록하다.</div>
+      <div class="stamp-footer">한 권의 책이 주는 여운</div>
     </div>
     <div class="record-actions">
       <button class="btn-download" onclick="downloadCard()">⬇ 이미지 저장</button>
@@ -623,7 +623,7 @@ async function downloadCard(){
     ctx.fillStyle='#4e6840';
     ctx.font="400 13px 'Noto Serif KR',serif";
     ctx.textAlign='center'; ctx.textBaseline='alphabetic';
-    ctx.fillText('대구 책방을 기록하다.', W/2, H-PAD/2-4);
+    ctx.fillText('한 권의 책이 주는 여운', W/2, H-PAD/2-4);
 
     // ── 저장 ──
     const dataUrl=canvas.toDataURL('image/png');
