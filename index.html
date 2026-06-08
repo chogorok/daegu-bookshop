@@ -262,6 +262,8 @@ function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').
 function stableId(name){let h=0;for(const c of name)h=(Math.imul(31,h)+c.charCodeAt(0))|0;return'shop_'+Math.abs(h).toString(36);}
 function normalizeImgUrl(url){
   if(!url)return'';
+  // https:// 없으면 자동으로 붙이기
+  if(!/^https?:\/\//i.test(url)) url='https://'+url;
   // GitHub blob URL → raw URL 자동 변환
   const gh=url.match(/github\.com\/([^/]+\/[^/]+)\/blob\/(.+)/);
   if(gh)return`https://raw.githubusercontent.com/${gh[1]}/${gh[2]}`;
