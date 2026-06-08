@@ -537,13 +537,14 @@ async function downloadCard(){
 
     const TITLE_H  = 70;
     const FOOTER_H = 36;
-    const availH   = H - PAD*2 - TITLE_H - FOOTER_H;
-    const cardH    = Math.floor((availH - GAP*(rows-1)) / rows);
     const pW       = Math.floor((W - PAD*2 - GAP*(cols-1)) / cols);
     const ip       = 5;
-    const iS       = Math.min(pW - ip*2, cardH - 28); // 사진 크기
+    const iS       = pW - ip*2;           // 사진: 카드 폭에 맞는 정사각형
     const nf       = Math.max(8, Math.min(13, Math.floor(pW/9)));
-    const gridTop  = PAD + TITLE_H;
+    const cardH    = ip + iS + ip + nf + 12; // 고정 높이 (사진 + 이름)
+    const gridH    = rows*cardH + (rows-1)*GAP;
+    const availH   = H - PAD*2 - TITLE_H - FOOTER_H;
+    const gridTop  = PAD + TITLE_H + Math.max(0, (availH - gridH) / 2); // 세로 중앙 정렬
 
     // ── 캔버스 ──
     const canvas=document.createElement('canvas');
