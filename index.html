@@ -260,7 +260,7 @@ const PAGE_SIZE = 3;
 // ── 유틸 ──
 function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 function stableId(name){let h=0;for(const c of name)h=(Math.imul(31,h)+c.charCodeAt(0))|0;return'shop_'+Math.abs(h).toString(36);}
-const GITHUB_IMG_BASE='https://raw.githubusercontent.com/chogorok/daegu-bookshop/main/images/';
+const GITHUB_IMG_BASE='https://chogorok.github.io/daegu-bookshop/images/';
 function normalizeImgUrl(url){
   if(!url)return'';
   url=url.trim();
@@ -472,8 +472,8 @@ function renderStampCard(){
         const st=stamps[s.id];
         const imgSrc = s.signUrl || '';
         const imgHtml = imgSrc
-          ? `<img src="${esc(imgSrc)}" crossorigin="anonymous"
-               onerror="this.style.display='none';this.nextElementSibling&&(this.nextElementSibling.style.display='flex')"
+          ? `<img src="${esc(imgSrc)}"
+               onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"
                style="width:100%;aspect-ratio:1/1;object-fit:cover;display:block;border-radius:2px;">` +
             `<div style="width:100%;aspect-ratio:1/1;background:var(--pale);display:none;align-items:center;justify-content:center;font-size:28px;border-radius:2px;">📚</div>`
           : `<div style="width:100%;aspect-ratio:1/1;background:var(--pale);display:flex;align-items:center;justify-content:center;font-size:28px;border-radius:2px;">📚</div>`;
