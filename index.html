@@ -638,90 +638,37 @@ async function downloadCard(){
 
  // ── 페이지별 저장 ── (이 위쪽 코드는 그대로 두시면 됩니다)
     
-    // 1. 인스타그램 인앱 브라우저인지 확인
-    const isInstagram = /Instagram/i.test(navigator.userAgent);
-    // 2. 아이폰(iOS)인지 확인
-    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+   // 1. 인스타그램 인앱 브라우저인지 확인
+  const isInstagram = /Instagram/i.test(navigator.userAgent);
+  // 2. 안드로이드인지 확인
+  const isAndroid = /Android/i.test(navigator.userAgent);
 
-    // 인스타그램 앱이거나 아이폰인 경우 -> 새 창 띄워서 꾹 눌러 저장 유도
- if (isInstagram || isIOS) {
-      const win = window.open();
-      
-      if (win) {
-        win.document.write(`
-          <!DOCTYPE html>
-          <html>
-          <head>
-            <meta charset="UTF-8">
-            <title>나의 대구 책방 기록</title>
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <style>
-              body {
-                margin: 0;
-                padding: 20px 10px 100px 10px;
-                background-color: #fcfbf7;
-                box-sizing: border-box;
-              }
-              .image-container {
-                max-width: 100%;
-                margin: 0 auto;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-              }
-              img {
-                max-width: 100%;
-                height: auto;
-                box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-                border-radius: 8px;
-                display: block;
-                margin-bottom: 16px;
-              }
-              .notice-bar {
-                position: fixed;
-                bottom: 0;
-                left: 0;
-                right: 0;
-                background: rgba(255, 255, 255, 0.95);
-                backdrop-filter: blur(5px);
-                border-top: 1px solid #eee;
-                padding: 16px;
-                text-align: center;
-                font-family: sans-serif;
-                font-size: 14px;
-                line-height: 1.5;
-                color: #333;
-                box-shadow: 0 -4px 10px rgba(0,0,0,0.05);
-                z-index: 9999;
-              }
-            </style>
-          </head>
-          <body>
-            <div class="image-container">
-              ${dataUrls.map((u, i) => `<img src="${u}" alt="책방 기록 ${i + 1}">`).join('')}
-            </div>
-            <div class="notice-bar">
-              인스타그램 앱에서는 바로 저장이 제한됩니다.<br>
-              위 이미지를 <span style="color:#d9534f; font-weight:bold;">꾹 눌러서(롱탭) 저장</span>해주세요! 📥
-            </div>
-          </body>
-          </html>
-        `);
-        win.document.close();
-      }
+  // [인스타 인앱 브라우저 탈출 및 우회 로직]
+  if (isInstagram) {
+    if (isAndroid) {
+      // 안드로이드 인스타: 크롬 브라우저를 강제로 열어 바로 다운로드합니다.
+      const currentUrl = window.location.href;
+      window.location.href = "intent://" + currentUrl.replace(/^https?:\/\//, "") + "#Intent;scheme=https;package=com.android.chrome;end";
     } else {
-      // 일반 안드로이드 브라우저: 페이지별 순차 다운로드
-      for(let i=0;i<dataUrls.length;i++){
-        const a=document.createElement('a');
-        a.download=dataUrls.length>1?`대구책방기록_${i+1}.png`:'대구책방기록.png';
-        a.href=dataUrls[i]; a.click();
-        if(i<dataUrls.length-1) await new Promise(r=>setTimeout(r,300));
-      }
+      // 아이폰 인스타: 사파리로 열도록 깔끔한 경고창을 띄웁니다.
+      alert("🚨 인스타그램 앱의 제한으로 인해 바로 저장이 불가능합니다.\n\n화면 우측 상단의 [점 3개(•••)] 버튼을 눌러 [Safari에서 열기]를 선택해주세요! 사파리 앱으로 전환되면 정상적으로 다운로드됩니다. 😉");
     }
-    showToast(dataUrls.length>1?`${dataUrls.length}장 저장됐어요!`:'저장됐어요!');
-  }catch(e){ console.error(e); showToast('이미지 저장에 실패했어요.'); }
+  } else {
+    // 일반 브라우저 (아이폰 사파리, 크롬 등): 정상 순차 다운로드 실행
+    for(let i=0; i<dataUrls.length; i++){
+      const a = document.createElement('a');
+      a.download = dataUrls.length > 1 ? `대구책방기록_${i+1}.png` : '대구책방기록.png';
+      a.href = dataUrls[i]; 
+      a.click();
+      if(i < dataUrls.length - 1) await new Promise(r => setTimeout(r, 300));
+    }
+  }
+  showToast(dataUrls.length > 1 ? `${dataUrls.length}장 저장됐어요!` : '저장됐어요!');
+} catch(e) { 
+  console.error(e); 
+  showToast('이미지 저장에 실패했어요.'); 
 }
-
+}
 // ── 토스트 ──
 let toastTimer;
 function showToast(msg){
