@@ -644,17 +644,72 @@ async function downloadCard(){
     const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
 
     // 인스타그램 앱이거나 아이폰인 경우 -> 새 창 띄워서 꾹 눌러 저장 유도
-    if (isInstagram || isIOS) {
+ if (isInstagram || isIOS) {
       const win = window.open();
-      win.document.write(
-        dataUrls.map((u,i)=>
-          `<img src="${u}" style="max-width:100%;display:block;margin:0 auto 16px">`
-        ).join('')+
-        `<p style="font-family:sans-serif;color:#333;font-size:15px;font-weight:bold;text-align:center;padding:12px">
-          인스타그램 앱에서는 바로 저장이 제한됩니다.<br>
-          위 이미지를 <span style="color:#d9534f;">꾹 눌러서(롱탭) 저장</span>해주세요! 📥
-         </p>`
-      );
+      
+      if (win) {
+        win.document.write(`
+          <!DOCTYPE html>
+          <html>
+          <head>
+            <meta charset="UTF-8">
+            <title>나의 대구 책방 기록</title>
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <style>
+              body {
+                margin: 0;
+                padding: 20px 10px 100px 10px;
+                background-color: #fcfbf7;
+                box-sizing: border-box;
+              }
+              .image-container {
+                max-width: 100%;
+                margin: 0 auto;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+              }
+              img {
+                max-width: 100%;
+                height: auto;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+                border-radius: 8px;
+                display: block;
+                margin-bottom: 16px;
+              }
+              .notice-bar {
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                background: rgba(255, 255, 255, 0.95);
+                backdrop-filter: blur(5px);
+                border-top: 1px solid #eee;
+                padding: 16px;
+                text-align: center;
+                font-family: sans-serif;
+                font-size: 14px;
+                line-height: 1.5;
+                color: #333;
+                box-shadow: 0 -4px 10px rgba(0,0,0,0.05);
+                z-index: 9999;
+              }
+            </style>
+          </head>
+          <body>
+            <div class="image-container">
+              ${dataUrls.map((u, i) => `<img src="${u}" alt="책방 기록 ${i + 1}">`).join('')}
+            </div>
+            <div class="notice-bar">
+              인스타그램 앱에서는 바로 저장이 제한됩니다.<br>
+              위 이미지를 <span style="color:#d9534f; font-weight:bold;">꾹 눌러서(롱탭) 저장</span>해주세요! 📥
+            </div>
+          </body>
+          </html>
+        `);
+        win.document.close();
+      }
+    }
     } else {
       // 일반 안드로이드 브라우저: 페이지별 순차 다운로드
       for(let i=0;i<dataUrls.length;i++){
