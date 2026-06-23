@@ -636,17 +636,27 @@ async function downloadCard(){
       dataUrls.push(drawPage(pageVisited,p+1,totalPages).toDataURL('image/png'));
     }
 
-    const isIOS=/iPad|iPhone|iPod/.test(navigator.userAgent);
-    if(isIOS){
-      const win=window.open();
+ // ── 페이지별 저장 ── (이 위쪽 코드는 그대로 두시면 됩니다)
+    
+    // 1. 인스타그램 인앱 브라우저인지 확인
+    const isInstagram = /Instagram/i.test(navigator.userAgent);
+    // 2. 아이폰(iOS)인지 확인
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+
+    // 인스타그램 앱이거나 아이폰인 경우 -> 새 창 띄워서 꾹 눌러 저장 유도
+    if (isInstagram || isIOS) {
+      const win = window.open();
       win.document.write(
         dataUrls.map((u,i)=>
           `<img src="${u}" style="max-width:100%;display:block;margin:0 auto 16px">`
         ).join('')+
-        `<p style="font-family:sans-serif;color:#888;font-size:13px;text-align:center;padding:12px">이미지를 꾹 눌러 저장해주세요 📥</p>`
+        `<p style="font-family:sans-serif;color:#333;font-size:15px;font-weight:bold;text-align:center;padding:12px">
+          인스타그램 앱에서는 바로 저장이 제한됩니다.<br>
+          위 이미지를 <span style="color:#d9534f;">꾹 눌러서(롱탭) 저장</span>해주세요! 📥
+         </p>`
       );
     } else {
-      // Android: 페이지별 순차 다운로드
+      // 일반 안드로이드 브라우저: 페이지별 순차 다운로드
       for(let i=0;i<dataUrls.length;i++){
         const a=document.createElement('a');
         a.download=dataUrls.length>1?`대구책방기록_${i+1}.png`:'대구책방기록.png';
