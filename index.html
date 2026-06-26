@@ -635,18 +635,7 @@ async function downloadCard(){
       return canvas;
     };
 
-    // ── 페이지별 저장 ──
-    const totalPages=Math.ceil(visited.length/STAMP_PER_PAGE);
-    const dataUrls=[];
-    for(let p=0;p<totalPages;p++){
-      const pageVisited=visited.slice(p*STAMP_PER_PAGE,(p+1)*STAMP_PER_PAGE);
-      dataUrls.push(drawPage(pageVisited,p+1,totalPages).toDataURL('image/png'));
-    }
-
-// ── 페이지별 저장 ── (이 위쪽 코드는 그대로 두시면 됩니다)
-
-    try { 
-      // [치유 완료] 누락되었던 이미지 주소 생성 로직을 제자리에 채워 넣었습니다.
+    try {
       const totalPages = Math.ceil(visited.length / STAMP_PER_PAGE);
       const dataUrls = [];
       for (let p = 0; p < totalPages; p++) {
