@@ -638,8 +638,7 @@ async function downloadCard(){
 
 // ── 페이지별 저장 ── (이 위쪽 코드는 그대로 두시면 됩니다)
 
-    try { // 👈 [핵심 수정] 에러를 해결하기 위해 try 문을 여기에 추가했습니다!
-    
+    try { 
       // 1. 인스타그램 및 네이버 인앱 브라우저 확인
       const userAgent = navigator.userAgent;
       const isInstagram = /Instagram/i.test(userAgent);
@@ -654,25 +653,36 @@ async function downloadCard(){
         if (isAndroid) {
           // 안드로이드 인스타 -> 크롬 강제 이동
           window.location.href = "intent://" + currentUrl.replace(/^https?:\/\//, "") + "#Intent;scheme=https;package=com.android.chrome;end";
+          return;
         } else {
           // 아이폰 인스타 -> 사파리 유도 알림
           alert("🚨 인스타그램 앱의 제한으로 인해 바로 저장이 불가능합니다.\n\n화면 우측 상단의 [점 3개(•••)] 버튼을 눌러 [Safari에서 열기]를 선택해주세요! 사파리 앱으로 전환되면 정상적으로 다운로드됩니다. 😉");
+          return;
         }
       } else if (isNaver) {
-        // 네이버 앱 링크 복사 팝업 유도
-        alert(`🚨 네이버 앱 자체 제한으로 인해 파일 다운로드가 차단되었습니다.\n\n아래의 웹사이트 주소를 복사해서 [Chrome]이나 [Safari] 브라우저에 붙여넣어 접속하시면 정상적으로 바로 저장됩니다!\n\n📌 복사할 주소:\n${currentUrl}`);
-      } else {
-        // 일반 브라우저 (크롬, 사파리, 삼성인터넷 등): 정상 순차 다운로드 실행
-        for(let i=0; i<dataUrls.length; i++){
-          const a = document.createElement('a');
-          a.download = dataUrls.length > 1 ? `대구책방기록_${i+1}.png` : '대구책방기록.png';
-          a.href = dataUrls[i]; 
-          a.click();
-          if(i < dataUrls.length - 1) await new Promise(r => setTimeout(r, 300));
+        // [핵심 기능] 네이버 앱 감지 시 유저 몰래 주소를 클립보드에 즉시 복사합니다.
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(currentUrl).catch(err => console.error(err));
+        } else {
+          // 구형 환경 대응용 임시 복사 로직
+          const t = document.createElement("textarea"); document.body.appendChild(t); t.value = currentUrl; t.select(); document.execCommand("copy"); document.body.removeChild(t);
         }
+        
+        // 주소 복사가 끝난 후 뜨는 직관적인 안내 팝업창
+        alert("🚨 네이버 앱 자체 제한으로 인해 파일 다운로드가 차단되었습니다.\n\n웹사이트 주소가 자동으로 [복사]되었습니다! 👍\n\n지금 바로 [Chrome]이나 [Safari] 브라우저 앱을 켜고 주소창에 [붙여넣기]해서 접속하시면 정상적으로 바로 저장하실 수 있습니다. 😉");
+        return;
+      }
+
+      // 일반 브라우저 (크롬, 사파리, 삼성인터넷 등): 정상 순차 다운로드 실행
+      for(let i=0; i<dataUrls.length; i++){
+        const a = document.createElement('a');
+        a.download = dataUrls.length > 1 ? `대구책방기록_${i+1}.png` : '대구책방기록.png';
+        a.href = dataUrls[i]; 
+        a.click();
+        if(i < dataUrls.length - 1) await new Promise(r => setTimeout(r, 300));
       }
       showToast(dataUrls.length > 1 ? `${dataUrls.length}장 저장됐어요!` : '저장됐어요!');
-    } catch(e) { // 👈 이제 이 catch 문과 완벽하게 짝이 맞게 됩니다!
+    } catch(e) { 
       console.error(e); 
       showToast('이미지 저장에 실패했어요.'); 
     }
@@ -704,3 +714,4 @@ init();
 </script>
 </body>
 </html>
+
