@@ -644,10 +644,19 @@ async function downloadCard(){
       const isAndroid = /Android/i.test(userAgent);
 
       const isIOS = /iPhone|iPad|iPod/i.test(userAgent);
-      const isInApp = isInstagram || isNaver || /KAKAOTALK|Line\/|FB_IAB|FBAN/i.test(userAgent);
+      const isInApp = isNaver || /KAKAOTALK|Line\/|FB_IAB|FBAN/i.test(userAgent);
+      const currentUrl = window.location.href;
 
-      if (isInApp || isIOS) {
-        // 인앱 브라우저: 이미지를 화면에 직접 표시 → 꾹 눌러 저장 유도
+      if (isInstagram) {
+        // 인스타그램: 꾹 누르기 자체가 막혀있어 외부 브라우저로 이동해야 함
+        if (isAndroid) {
+          window.location.href = "intent://" + currentUrl.replace(/^https?:\/\//, "") + "#Intent;scheme=https;package=com.android.chrome;end";
+        } else {
+          alert("인스타그램 앱에서는 저장이 제한됩니다.\n\n화면 하단 또는 우측 상단의 Safari 아이콘을 눌러\nSafari로 열어주세요.");
+        }
+        return;
+      } else if (isInApp || isIOS) {
+        // 네이버·카카오·iOS: 오버레이에 이미지 표시 → 꾹 눌러 저장
         showImageSaveOverlay(dataUrls);
       } else {
         // 일반 브라우저: 정상 다운로드
