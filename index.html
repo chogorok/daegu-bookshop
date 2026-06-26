@@ -258,43 +258,70 @@ header p{font-size:13px;color:rgba(238,240,230,.65);letter-spacing:.04em;margin-
     </div>
     <div class="map-body">
       <div class="map-svg-wrap">
-        <svg viewBox="0 0 400 380" xmlns="http://www.w3.org/2000/svg">
+        <svg viewBox="0 0 290 400" xmlns="http://www.w3.org/2000/svg">
+          <!-- 군위군: 상단 대형 구역, 왼쪽 만(bay) 형태 -->
+          <polygon class="map-district" id="dist-군위군"
+            points="88,12 112,8 148,6 182,6 210,8 240,8 260,18 258,40 266,62 255,80 240,84 228,78 222,86 210,80 200,88 190,80 182,88 172,80 162,88 152,80
+                    140,88 130,80 118,88 108,80 98,88 88,80 74,86 60,76 44,62 38,46 44,30 56,20 66,14 72,22 70,40 76,50 84,44 80,28"
+            onclick="selectDistrict('군위군')"/>
+          <text class="map-district-label" x="178" y="48" text-anchor="middle">군위군</text>
+          <text class="map-district-count" x="178" y="60" text-anchor="middle" id="cnt-군위군"></text>
+
           <!-- 북구 -->
-          <polygon class="map-district" id="dist-북구" points="130,20 200,15 230,40 220,80 180,95 140,85 115,60" onclick="selectDistrict('북구')"/>
-          <text class="map-district-label" x="168" y="55">북구</text>
-          <text class="map-district-count" x="168" y="67" id="cnt-북구"></text>
+          <polygon class="map-district" id="dist-북구"
+            points="118,90 192,90 205,108 210,158 175,174 130,170 108,156 100,118"
+            onclick="selectDistrict('북구')"/>
+          <text class="map-district-label" x="155" y="132" text-anchor="middle">북구</text>
+          <text class="map-district-count" x="155" y="144" text-anchor="middle" id="cnt-북구"></text>
+
           <!-- 동구 -->
-          <polygon class="map-district" id="dist-동구" points="220,80 280,50 330,70 340,120 300,145 250,140 220,110" onclick="selectDistrict('동구')"/>
-          <text class="map-district-label" x="272" y="100">동구</text>
-          <text class="map-district-count" x="272" y="112" id="cnt-동구"></text>
+          <polygon class="map-district" id="dist-동구"
+            points="192,90 258,96 270,122 276,172 246,210 200,212 185,174 210,158 205,108"
+            onclick="selectDistrict('동구')"/>
+          <text class="map-district-label" x="232" y="148" text-anchor="middle">동구</text>
+          <text class="map-district-count" x="232" y="160" text-anchor="middle" id="cnt-동구"></text>
+
           <!-- 서구 -->
-          <polygon class="map-district" id="dist-서구" points="70,90 115,60 140,85 130,130 100,150 65,135" onclick="selectDistrict('서구')"/>
-          <text class="map-district-label" x="95" y="108">서구</text>
-          <text class="map-district-count" x="95" y="120" id="cnt-서구"></text>
+          <polygon class="map-district" id="dist-서구"
+            points="86,148 126,146 130,170 122,198 95,200 78,176"
+            onclick="selectDistrict('서구')"/>
+          <text class="map-district-label" x="104" y="172" text-anchor="middle">서구</text>
+          <text class="map-district-count" x="104" y="184" text-anchor="middle" id="cnt-서구"></text>
+
           <!-- 중구 -->
-          <polygon class="map-district" id="dist-중구" points="140,85 180,95 200,115 190,145 155,155 130,130" onclick="selectDistrict('중구')"/>
-          <text class="map-district-label" x="158" y="123">중구</text>
-          <text class="map-district-count" x="158" y="135" id="cnt-중구"></text>
-          <!-- 수성구 -->
-          <polygon class="map-district" id="dist-수성구" points="220,110 250,140 300,145 310,195 270,220 220,210 190,175 190,145 200,115" onclick="selectDistrict('수성구')"/>
-          <text class="map-district-label" x="248" y="175">수성구</text>
-          <text class="map-district-count" x="248" y="187" id="cnt-수성구"></text>
+          <polygon class="map-district" id="dist-중구"
+            points="126,146 175,146 180,176 174,200 136,200 122,176 130,170"
+            onclick="selectDistrict('중구')"/>
+          <text class="map-district-label" x="150" y="170" text-anchor="middle">중구</text>
+          <text class="map-district-count" x="150" y="182" text-anchor="middle" id="cnt-중구"></text>
+
           <!-- 남구 -->
-          <polygon class="map-district" id="dist-남구" points="130,130 155,155 190,145 190,175 165,200 130,195 105,165" onclick="selectDistrict('남구')"/>
-          <text class="map-district-label" x="148" y="170">남구</text>
-          <text class="map-district-count" x="148" y="182" id="cnt-남구"></text>
+          <polygon class="map-district" id="dist-남구"
+            points="95,200 136,200 174,200 180,226 158,248 118,248 94,222"
+            onclick="selectDistrict('남구')"/>
+          <text class="map-district-label" x="138" y="222" text-anchor="middle">남구</text>
+          <text class="map-district-count" x="138" y="234" text-anchor="middle" id="cnt-남구"></text>
+
+          <!-- 수성구 -->
+          <polygon class="map-district" id="dist-수성구"
+            points="174,200 200,212 246,210 252,260 224,274 174,266 158,248 180,226"
+            onclick="selectDistrict('수성구')"/>
+          <text class="map-district-label" x="212" y="238" text-anchor="middle">수성구</text>
+          <text class="map-district-count" x="212" y="250" text-anchor="middle" id="cnt-수성구"></text>
+
           <!-- 달서구 -->
-          <polygon class="map-district" id="dist-달서구" points="65,135 100,150 130,130 105,165 130,195 115,230 75,240 45,200 50,160" onclick="selectDistrict('달서구')"/>
-          <text class="map-district-label" x="82" y="188">달서구</text>
-          <text class="map-district-count" x="82" y="200" id="cnt-달서구"></text>
+          <polygon class="map-district" id="dist-달서구"
+            points="54,200 78,176 95,200 94,222 100,256 82,272 55,258 42,228"
+            onclick="selectDistrict('달서구')"/>
+          <text class="map-district-label" x="72" y="232" text-anchor="middle">달서구</text>
+          <text class="map-district-count" x="72" y="244" text-anchor="middle" id="cnt-달서구"></text>
+
           <!-- 달성군 -->
-          <polygon class="map-district" id="dist-달성군" points="45,200 75,240 115,230 130,195 165,200 190,175 220,210 210,270 170,310 120,320 70,295 30,260 20,225" onclick="selectDistrict('달성군')"/>
-          <text class="map-district-label" x="110" y="263">달성군</text>
-          <text class="map-district-count" x="110" y="275" id="cnt-달성군"></text>
-          <!-- 군위군 (2023 편입) -->
-          <polygon class="map-district" id="dist-군위군" points="200,15 280,10 350,30 360,70 330,70 280,50 230,40" onclick="selectDistrict('군위군')"/>
-          <text class="map-district-label" x="268" y="40">군위군</text>
-          <text class="map-district-count" x="268" y="52" id="cnt-군위군"></text>
+          <polygon class="map-district" id="dist-달성군"
+            points="42,228 55,258 82,272 100,256 94,222 118,248 158,248 174,266 224,274 218,322 196,362 162,384 128,392 92,380 60,348 30,308 18,268 24,238"
+            onclick="selectDistrict('달성군')"/>
+          <text class="map-district-label" x="118" y="318" text-anchor="middle">달성군</text>
+          <text class="map-district-count" x="118" y="330" text-anchor="middle" id="cnt-달성군"></text>
         </svg>
       </div>
       <div class="map-shop-list" id="mapShopList">
