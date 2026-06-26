@@ -643,9 +643,10 @@ async function downloadCard(){
       const isNaver = /NAVER/i.test(userAgent);
       const isAndroid = /Android/i.test(userAgent);
 
+      const isIOS = /iPhone|iPad|iPod/i.test(userAgent);
       const isInApp = isInstagram || isNaver || /KAKAOTALK|Line\/|FB_IAB|FBAN/i.test(userAgent);
 
-      if (isInApp) {
+      if (isInApp || isIOS) {
         // 인앱 브라우저: 이미지를 화면에 직접 표시 → 꾹 눌러 저장 유도
         showImageSaveOverlay(dataUrls);
       } else {
