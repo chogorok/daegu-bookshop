@@ -636,46 +636,48 @@ async function downloadCard(){
       dataUrls.push(drawPage(pageVisited,p+1,totalPages).toDataURL('image/png'));
     }
 
- // ── 페이지별 저장 ── (이 위쪽 코드는 그대로 두시면 됩니다)
+// ── 페이지별 저장 ── (이 위쪽 코드는 그대로 두시면 됩니다)
+
+    try { // 👈 [핵심 수정] 에러를 해결하기 위해 try 문을 여기에 추가했습니다!
     
-// 1. 인스타그램 및 네이버 인앱 브라우저 확인
-  const userAgent = navigator.userAgent;
-  const isInstagram = /Instagram/i.test(userAgent);
-  const isNaver = /NAVER/i.test(userAgent);
-  const isAndroid = /Android/i.test(userAgent);
+      // 1. 인스타그램 및 네이버 인앱 브라우저 확인
+      const userAgent = navigator.userAgent;
+      const isInstagram = /Instagram/i.test(userAgent);
+      const isNaver = /NAVER/i.test(userAgent);
+      const isAndroid = /Android/i.test(userAgent);
 
-  // 현재 웹사이트의 주소
-  const currentUrl = window.location.href;
+      // 현재 웹사이트의 주소
+      const currentUrl = window.location.href;
 
-  // [인앱 브라우저 예외 처리]
-  if (isInstagram) {
-    if (isAndroid) {
-      // 안드로이드 인스타 -> 크롬 강제 이동 (인스타는 여전히 잘 작동함)
-      window.location.href = "intent://" + currentUrl.replace(/^https?:\/\//, "") + "#Intent;scheme=https;package=com.android.chrome;end";
-    } else {
-      // 아이폰 인스타 -> 사파리 유도 알림
-      alert("🚨 인스타그램 앱의 제한으로 인해 바로 저장이 불가능합니다.\n\n화면 우측 상단의 [점 3개(•••)] 버튼을 눌러 [Safari에서 열기]를 선택해주세요! 사파리 앱으로 전환되면 정상적으로 다운로드됩니다. 😉");
+      // [인앱 브라우저 예외 처리]
+      if (isInstagram) {
+        if (isAndroid) {
+          // 안드로이드 인스타 -> 크롬 강제 이동
+          window.location.href = "intent://" + currentUrl.replace(/^https?:\/\//, "") + "#Intent;scheme=https;package=com.android.chrome;end";
+        } else {
+          // 아이폰 인스타 -> 사파리 유도 알림
+          alert("🚨 인스타그램 앱의 제한으로 인해 바로 저장이 불가능합니다.\n\n화면 우측 상단의 [점 3개(•••)] 버튼을 눌러 [Safari에서 열기]를 선택해주세요! 사파리 앱으로 전환되면 정상적으로 다운로드됩니다. 😉");
+        }
+      } else if (isNaver) {
+        // 네이버 앱 링크 복사 팝업 유도
+        alert(`🚨 네이버 앱 자체 제한으로 인해 파일 다운로드가 차단되었습니다.\n\n아래의 웹사이트 주소를 복사해서 [Chrome]이나 [Safari] 브라우저에 붙여넣어 접속하시면 정상적으로 바로 저장됩니다!\n\n📌 복사할 주소:\n${currentUrl}`);
+      } else {
+        // 일반 브라우저 (크롬, 사파리, 삼성인터넷 등): 정상 순차 다운로드 실행
+        for(let i=0; i<dataUrls.length; i++){
+          const a = document.createElement('a');
+          a.download = dataUrls.length > 1 ? `대구책방기록_${i+1}.png` : '대구책방기록.png';
+          a.href = dataUrls[i]; 
+          a.click();
+          if(i < dataUrls.length - 1) await new Promise(r => setTimeout(r, 300));
+        }
+      }
+      showToast(dataUrls.length > 1 ? `${dataUrls.length}장 저장됐어요!` : '저장됐어요!');
+    } catch(e) { // 👈 이제 이 catch 문과 완벽하게 짝이 맞게 됩니다!
+      console.error(e); 
+      showToast('이미지 저장에 실패했어요.'); 
     }
-  } else if (isNaver) {
-    // [핵심 수정] 네이버 앱은 안드로이드/아이폰 불문하고 링크 복사 팝업을 띄웁니다.
-    // 네이버 앱이 외부 앱 실행(Intent)을 원천 차단하기 때문에, 안전하게 주소를 복사하게 만듭니다.
-    alert(`🚨 네이버 앱 자체 제한으로 인해 파일 다운로드가 차단되었습니다.\n\n아래의 웹사이트 주소를 복사해서 [Chrome]이나 [Safari] 브라우저에 붙여넣어 접속하시면 정상적으로 바로 저장됩니다!\n\n📌 복사할 주소:\n${currentUrl}`);
-  } else {
-    // 일반 브라우저 (크롬, 사파리, 삼성인터넷 등): 정상 순차 다운로드 실행
-    for(let i=0; i<dataUrls.length; i++){
-      const a = document.createElement('a');
-      a.download = dataUrls.length > 1 ? `대구책방기록_${i+1}.png` : '대구책방기록.png';
-      a.href = dataUrls[i]; 
-      a.click();
-      if(i < dataUrls.length - 1) await new Promise(r => setTimeout(r, 300));
-    }
-  }
-  showToast(dataUrls.length > 1 ? `${dataUrls.length}장 저장됐어요!` : '저장됐어요!');
-} catch(e) { 
-  console.error(e); 
-  showToast('이미지 저장에 실패했어요.'); 
 }
-}
+
 // ── 토스트 ──
 let toastTimer;
 function showToast(msg){
