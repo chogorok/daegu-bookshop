@@ -537,7 +537,6 @@ function filterShops(q){
 }
 
 async function downloadCard(){
-  try{
     showToast('이미지를 준비 중이에요...');
     const stamps  = getStamps();
     const visited = shops.filter(s => stamps[s.id]);
