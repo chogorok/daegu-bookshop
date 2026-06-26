@@ -395,12 +395,6 @@ function renderShops(){
     card.onclick=()=>{ if(stamped)return; toggleSelect(shop.id); };
     card.innerHTML=`
       <div class="card-check">${stamped||sel?'✓':''}</div>
-      <div class="card-img-wrap">
-        ${shop.signUrl
-          ? `<img src="${esc(shop.signUrl)}" alt="${esc(shop.name)}" onerror="this.parentElement.innerHTML='<div style=\\'width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:32px;\\'>📚</div>'">`
-          : `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:32px;">📚</div>`
-        }
-      </div>
       <div class="card-body">
         <div class="shop-name">${esc(shop.name)}</div>
         ${shop.genre?`<span class="shop-genre">${esc(shop.genre)}</span>`:''}
