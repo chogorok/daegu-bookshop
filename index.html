@@ -61,7 +61,7 @@ header p{font-size:13px;color:rgba(238,240,230,.65);letter-spacing:.04em;margin-
 .card-check{position:absolute;top:10px;right:10px;width:22px;height:22px;border-radius:50%;border:2px solid var(--border);background:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;transition:all .2s;z-index:1;}
 .shop-card.selected .card-check{background:var(--rust);border-color:var(--rust);color:#fff;}
 .shop-card.already-stamped .card-check{background:var(--gold);border-color:var(--gold);color:#fff;}
-.card-img-wrap{width:100%;aspect-ratio:4/3;overflow:hidden;background:var(--pale);flex-shrink:0;}
+.card-img-wrap{width:100%;aspect-ratio:1/1;overflow:hidden;background:var(--pale);flex-shrink:0;}
 .card-img-wrap img{width:100%;height:100%;object-fit:cover;display:block;}
 .card-body{padding:14px 14px 14px 14px;flex:1;}
 .shop-name{font-family:'Noto Serif KR',serif;font-size:15px;font-weight:700;margin-bottom:4px;padding-right:28px;}
@@ -172,12 +172,14 @@ header p{font-size:13px;color:rgba(238,240,230,.65);letter-spacing:.04em;margin-
   .search-input{padding:10px 14px 10px 38px;font-size:13px;}
 
   /* 카드 목록 */
-  .shop-grid{grid-template-columns:1fr;gap:9px;}
-  .shop-card{border-radius:10px;}
-  .card-body{padding:12px 14px;}
-  .shop-name{font-size:13px;padding-right:22px;margin-bottom:3px;}
-  .shop-genre{font-size:10px;margin-bottom:4px;}
-  .shop-desc{font-size:11px;-webkit-line-clamp:2;}
+  .shop-grid{grid-template-columns:repeat(3,1fr);gap:6px;}
+  .shop-card{border-radius:8px;}
+  .card-body{padding:7px 8px;}
+  .card-img-wrap{aspect-ratio:1/1;}
+  .card-check{top:5px;right:5px;width:18px;height:18px;font-size:10px;}
+  .shop-name{font-size:11px;padding-right:18px;margin-bottom:2px;}
+  .shop-genre{font-size:9px;margin-bottom:2px;}
+  .shop-desc{font-size:10px;-webkit-line-clamp:2;}
   .card-check{top:8px;right:8px;width:20px;height:20px;font-size:11px;}
 
   /* 페이지 네비 */
