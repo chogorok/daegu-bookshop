@@ -189,25 +189,19 @@ header p{font-size:13px;color:rgba(238,240,230,.65);letter-spacing:.04em;margin-
   .synchro-num{font-size:30px;}
 }
 
-/* ── 책방 위치 지도 모달 ── */
+/* ── 책방 위치 모달 ── */
 #mapModal{position:fixed;inset:0;z-index:2000;display:flex;align-items:center;justify-content:center;padding:16px;}
-.map-box{position:relative;z-index:1;background:#fff;border-radius:16px;width:100%;max-width:560px;max-height:92vh;overflow-y:auto;box-shadow:0 24px 64px rgba(0,0,0,.3);}
+.map-box{position:relative;z-index:1;background:#fff;border-radius:16px;width:100%;max-width:480px;max-height:88vh;overflow-y:auto;box-shadow:0 24px 64px rgba(0,0,0,.3);}
 .map-head{padding:18px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:#fff;z-index:1;}
 .map-head h3{font-family:'Noto Serif KR',serif;font-size:17px;font-weight:700;}
-.map-body{padding:20px;}
-.map-svg-wrap{width:100%;margin-bottom:16px;cursor:pointer;}
-.map-svg-wrap svg{width:100%;height:auto;}
-.map-district{fill:#eef3e6;stroke:#c2d4ae;stroke-width:1.5;transition:fill .2s;cursor:pointer;}
-.map-district:hover{fill:#d4e8c4;}
-.map-district.active{fill:#6a9a50;}
-.map-district-label{font-family:'Noto Sans KR',sans-serif;font-size:10px;fill:#2a3d28;pointer-events:none;font-weight:600;}
-.map-district-count{font-family:'Noto Sans KR',sans-serif;font-size:9px;fill:#4a7a3a;pointer-events:none;}
-.map-shop-list{min-height:60px;}
-.map-shop-list h4{font-size:13px;font-weight:700;color:var(--header);margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--border);}
-.map-shop-item{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid #f0f0f0;font-size:13px;}
-.map-shop-item:last-child{border-bottom:none;}
-.map-shop-dot{width:8px;height:8px;border-radius:50%;background:var(--gold);flex-shrink:0;}
-.map-hint{text-align:center;color:#aaa;font-size:12px;padding:16px 0;}
+.map-body{padding:16px 20px 24px;}
+.dist-section{margin-bottom:18px;}
+.dist-section:last-child{margin-bottom:0;}
+.dist-title{font-family:'Noto Serif KR',serif;font-size:14px;font-weight:700;color:var(--header);margin-bottom:8px;padding-bottom:6px;border-bottom:1.5px solid var(--border);display:flex;align-items:center;gap:8px;}
+.dist-count{font-family:'Noto Sans KR',sans-serif;font-size:11px;font-weight:500;color:var(--gold);background:var(--pale);padding:1px 7px;border-radius:20px;}
+.dist-shop-item{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid #f5f5f5;font-size:13px;color:var(--ink);}
+.dist-shop-item:last-child{border-bottom:none;}
+.map-shop-dot{width:7px;height:7px;border-radius:50%;background:var(--gold);flex-shrink:0;}
 </style>
 </head>
 <body>
@@ -248,7 +242,7 @@ header p{font-size:13px;color:rgba(238,240,230,.65);letter-spacing:.04em;margin-
   </div>
 </div>
 
-<!-- 책방 위치 지도 모달 -->
+<!-- 책방 위치 모달 -->
 <div id="mapModal" class="hidden">
   <div class="modal-overlay" onclick="closeMapModal()"></div>
   <div class="map-box">
@@ -256,80 +250,10 @@ header p{font-size:13px;color:rgba(238,240,230,.65);letter-spacing:.04em;margin-
       <h3>📍 대구 책방 위치</h3>
       <button class="modal-close" onclick="closeMapModal()">×</button>
     </div>
-    <div class="map-body">
-      <div class="map-svg-wrap">
-        <svg viewBox="0 0 290 400" xmlns="http://www.w3.org/2000/svg">
-          <!-- 군위군: 상단 대형 구역, 왼쪽 만(bay) 형태 -->
-          <polygon class="map-district" id="dist-군위군"
-            points="88,12 112,8 148,6 182,6 210,8 240,8 260,18 258,40 266,62 255,80 240,84 228,78 222,86 210,80 200,88 190,80 182,88 172,80 162,88 152,80
-                    140,88 130,80 118,88 108,80 98,88 88,80 74,86 60,76 44,62 38,46 44,30 56,20 66,14 72,22 70,40 76,50 84,44 80,28"
-            onclick="selectDistrict('군위군')"/>
-          <text class="map-district-label" x="178" y="48" text-anchor="middle">군위군</text>
-          <text class="map-district-count" x="178" y="60" text-anchor="middle" id="cnt-군위군"></text>
-
-          <!-- 북구 -->
-          <polygon class="map-district" id="dist-북구"
-            points="118,90 192,90 205,108 210,158 175,174 130,170 108,156 100,118"
-            onclick="selectDistrict('북구')"/>
-          <text class="map-district-label" x="155" y="132" text-anchor="middle">북구</text>
-          <text class="map-district-count" x="155" y="144" text-anchor="middle" id="cnt-북구"></text>
-
-          <!-- 동구 -->
-          <polygon class="map-district" id="dist-동구"
-            points="192,90 258,96 270,122 276,172 246,210 200,212 185,174 210,158 205,108"
-            onclick="selectDistrict('동구')"/>
-          <text class="map-district-label" x="232" y="148" text-anchor="middle">동구</text>
-          <text class="map-district-count" x="232" y="160" text-anchor="middle" id="cnt-동구"></text>
-
-          <!-- 서구 -->
-          <polygon class="map-district" id="dist-서구"
-            points="86,148 126,146 130,170 122,198 95,200 78,176"
-            onclick="selectDistrict('서구')"/>
-          <text class="map-district-label" x="104" y="172" text-anchor="middle">서구</text>
-          <text class="map-district-count" x="104" y="184" text-anchor="middle" id="cnt-서구"></text>
-
-          <!-- 중구 -->
-          <polygon class="map-district" id="dist-중구"
-            points="126,146 175,146 180,176 174,200 136,200 122,176 130,170"
-            onclick="selectDistrict('중구')"/>
-          <text class="map-district-label" x="150" y="170" text-anchor="middle">중구</text>
-          <text class="map-district-count" x="150" y="182" text-anchor="middle" id="cnt-중구"></text>
-
-          <!-- 남구 -->
-          <polygon class="map-district" id="dist-남구"
-            points="95,200 136,200 174,200 180,226 158,248 118,248 94,222"
-            onclick="selectDistrict('남구')"/>
-          <text class="map-district-label" x="138" y="222" text-anchor="middle">남구</text>
-          <text class="map-district-count" x="138" y="234" text-anchor="middle" id="cnt-남구"></text>
-
-          <!-- 수성구 -->
-          <polygon class="map-district" id="dist-수성구"
-            points="174,200 200,212 246,210 252,260 224,274 174,266 158,248 180,226"
-            onclick="selectDistrict('수성구')"/>
-          <text class="map-district-label" x="212" y="238" text-anchor="middle">수성구</text>
-          <text class="map-district-count" x="212" y="250" text-anchor="middle" id="cnt-수성구"></text>
-
-          <!-- 달서구 -->
-          <polygon class="map-district" id="dist-달서구"
-            points="54,200 78,176 95,200 94,222 100,256 82,272 55,258 42,228"
-            onclick="selectDistrict('달서구')"/>
-          <text class="map-district-label" x="72" y="232" text-anchor="middle">달서구</text>
-          <text class="map-district-count" x="72" y="244" text-anchor="middle" id="cnt-달서구"></text>
-
-          <!-- 달성군 -->
-          <polygon class="map-district" id="dist-달성군"
-            points="42,228 55,258 82,272 100,256 94,222 118,248 158,248 174,266 224,274 218,322 196,362 162,384 128,392 92,380 60,348 30,308 18,268 24,238"
-            onclick="selectDistrict('달성군')"/>
-          <text class="map-district-label" x="118" y="318" text-anchor="middle">달성군</text>
-          <text class="map-district-count" x="118" y="330" text-anchor="middle" id="cnt-달성군"></text>
-        </svg>
-      </div>
-      <div class="map-shop-list" id="mapShopList">
-        <p class="map-hint">구·군을 눌러 책방을 확인하세요</p>
-      </div>
-    </div>
+    <div class="map-body" id="mapShopList"></div>
   </div>
 </div>
+
 
 <!-- 스탬프 기록 모달 -->
 <div id="recordModal" class="hidden">
@@ -818,50 +742,30 @@ function showToast(msg){
   clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove('show'),2800);
 }
 
-// ── 책방 위치 지도 ──
-const DISTRICT_SHOPS = {
-  '중구': ['초고록','고스트북스','더폴락'],
-  '남구': ['책방다독','하나의 시선','물루'],
-  '수성구': ['그림이 글에게','일글꺼리','읽다익다'],
-  '달서구': ['예술책 빵 지혜'],
-  '서구': ['사소한책방'],
-  '북구': ['나른한책방'],
-  '동구': ['정글북'],
-  '달성군': [],
-  '군위군': [],
-};
+// ── 책방 위치 ──
+const DISTRICT_SHOPS = [
+  { name:'중구',  shops:['초고록','고스트북스','더폴락'] },
+  { name:'남구',  shops:['책방다독','하나의 시선','물루'] },
+  { name:'수성구',shops:['그림이 글에게','일글꺼리','읽다익다'] },
+  { name:'달서구',shops:['예술책 빵 지혜'] },
+  { name:'서구',  shops:['사소한책방'] },
+  { name:'북구',  shops:['나른한책방'] },
+  { name:'동구',  shops:['정글북'] },
+];
 
 function showMapModal(){
-  // 구별 카운트 표시
-  Object.keys(DISTRICT_SHOPS).forEach(d=>{
-    const cnt = DISTRICT_SHOPS[d].length;
-    const el = document.getElementById('cnt-'+d);
-    if(el) el.textContent = cnt > 0 ? `책방 ${cnt}곳` : '';
-  });
+  const list = document.getElementById('mapShopList');
+  list.innerHTML = DISTRICT_SHOPS.map(d=>`
+    <div class="dist-section">
+      <div class="dist-title">${d.name} <span class="dist-count">${d.shops.length}곳</span></div>
+      ${d.shops.map(s=>`<div class="dist-shop-item"><span class="map-shop-dot"></span>${s}</div>`).join('')}
+    </div>
+  `).join('');
   document.getElementById('mapModal').classList.remove('hidden');
 }
 
 function closeMapModal(){
   document.getElementById('mapModal').classList.add('hidden');
-  // 선택 초기화
-  document.querySelectorAll('.map-district.active').forEach(el=>el.classList.remove('active'));
-  document.getElementById('mapShopList').innerHTML = '<p class="map-hint">구·군을 눌러 책방을 확인하세요</p>';
-}
-
-function selectDistrict(name){
-  // 이전 선택 제거
-  document.querySelectorAll('.map-district.active').forEach(el=>el.classList.remove('active'));
-  const distEl = document.getElementById('dist-'+name);
-  if(distEl) distEl.classList.add('active');
-
-  const shops = DISTRICT_SHOPS[name] || [];
-  const list = document.getElementById('mapShopList');
-  if(shops.length === 0){
-    list.innerHTML = `<h4>📍 ${name}</h4><p class="map-hint">등록된 책방이 없습니다</p>`;
-  } else {
-    list.innerHTML = `<h4>📍 ${name} · 책방 ${shops.length}곳</h4>`
-      + shops.map(s=>`<div class="map-shop-item"><span class="map-shop-dot"></span>${s}</div>`).join('');
-  }
 }
 
 // ── 초기화 ──
