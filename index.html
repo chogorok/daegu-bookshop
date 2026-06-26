@@ -195,13 +195,20 @@ header p{font-size:13px;color:rgba(238,240,230,.65);letter-spacing:.04em;margin-
 .map-head{padding:18px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:#fff;z-index:1;}
 .map-head h3{font-family:'Noto Serif KR',serif;font-size:17px;font-weight:700;}
 .map-body{padding:16px 20px 24px;}
-.dist-section{margin-bottom:18px;}
-.dist-section:last-child{margin-bottom:0;}
-.dist-title{font-family:'Noto Serif KR',serif;font-size:14px;font-weight:700;color:var(--header);margin-bottom:8px;padding-bottom:6px;border-bottom:1.5px solid var(--border);display:flex;align-items:center;gap:8px;}
-.dist-count{font-family:'Noto Sans KR',sans-serif;font-size:11px;font-weight:500;color:var(--gold);background:var(--pale);padding:1px 7px;border-radius:20px;}
-.dist-shop-item{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid #f5f5f5;font-size:13px;color:var(--ink);}
+.dist-section{border-bottom:1px solid var(--border);}
+.dist-section:last-child{border-bottom:none;}
+.dist-title{width:100%;background:none;border:none;padding:14px 0;display:flex;align-items:center;justify-content:space-between;cursor:pointer;font-family:'Noto Serif KR',serif;font-size:14px;font-weight:700;color:var(--header);}
+.dist-title:hover{color:var(--rust);}
+.dist-right{display:flex;align-items:center;gap:8px;}
+.dist-count{font-family:'Noto Sans KR',sans-serif;font-size:11px;font-weight:500;color:var(--gold);background:var(--pale);padding:1px 8px;border-radius:20px;}
+.dist-arrow{font-size:12px;color:#aaa;}
+.dist-body{display:none;padding-bottom:10px;}
+.dist-body.open{display:block;}
+.dist-shop-item{display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid #f5f5f5;}
 .dist-shop-item:last-child{border-bottom:none;}
-.map-shop-dot{width:7px;height:7px;border-radius:50%;background:var(--gold);flex-shrink:0;}
+.dist-shop-name{font-size:13px;color:var(--ink);font-weight:600;}
+.dist-shop-genre{font-size:11px;color:var(--gold);margin-top:2px;}
+.map-shop-dot{width:7px;height:7px;border-radius:50%;background:var(--gold);flex-shrink:0;margin-top:4px;}
 </style>
 </head>
 <body>
@@ -337,6 +344,7 @@ function fetchShops(){
           desc:r.c[1]?.v||'',
           genre:r.c[2]?.v||'',
           signUrl:normalizeImgUrl(r.c[3]?.v||''),
+          district:r.c[4]?.v||'',
         })));
       }catch(e){reject(e);}
     };
@@ -743,25 +751,42 @@ function showToast(msg){
 }
 
 // ── 책방 위치 ──
-const DISTRICT_SHOPS = [
-  { name:'중구',  shops:['초고록','고스트북스','더폴락'] },
-  { name:'남구',  shops:['책방다독','하나의 시선','물루'] },
-  { name:'수성구',shops:['그림이 글에게','일글꺼리','읽다익다'] },
-  { name:'달서구',shops:['예술책 빵 지혜'] },
-  { name:'서구',  shops:['사소한책방'] },
-  { name:'북구',  shops:['나른한책방'] },
-  { name:'동구',  shops:['정글북'] },
-];
-
 function showMapModal(){
+  // 시트 데이터에서 지역구별로 그룹핑
+  const grouped = {};
+  shops.forEach(s=>{
+    const d = s.district || '기타';
+    if(!grouped[d]) grouped[d] = [];
+    grouped[d].push(s);
+  });
+
   const list = document.getElementById('mapShopList');
-  list.innerHTML = DISTRICT_SHOPS.map(d=>`
+  list.innerHTML = Object.entries(grouped).map(([dist, items])=>`
     <div class="dist-section">
-      <div class="dist-title">${d.name} <span class="dist-count">${d.shops.length}곳</span></div>
-      ${d.shops.map(s=>`<div class="dist-shop-item"><span class="map-shop-dot"></span>${s}</div>`).join('')}
+      <button class="dist-title" onclick="toggleDistrict(this)">
+        <span>${dist}</span>
+        <span class="dist-right"><span class="dist-count">${items.length}곳</span><span class="dist-arrow">▾</span></span>
+      </button>
+      <div class="dist-body">
+        ${items.map(s=>`
+          <div class="dist-shop-item">
+            <span class="map-shop-dot"></span>
+            <div>
+              <div class="dist-shop-name">${esc(s.name)}</div>
+              ${s.genre?`<div class="dist-shop-genre">${esc(s.genre)}</div>`:''}
+            </div>
+          </div>`).join('')}
+      </div>
     </div>
   `).join('');
   document.getElementById('mapModal').classList.remove('hidden');
+}
+
+function toggleDistrict(btn){
+  const body = btn.nextElementSibling;
+  const arrow = btn.querySelector('.dist-arrow');
+  const open = body.classList.toggle('open');
+  arrow.textContent = open ? '▴' : '▾';
 }
 
 function closeMapModal(){
